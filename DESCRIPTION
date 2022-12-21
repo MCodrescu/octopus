@@ -17,4 +17,7 @@ Imports:
     dplyr,
     glue,
     readr,
-    RPostgres
+    RPostgres,
+    shiny,
+    shinyAce,
+    shinyjs
