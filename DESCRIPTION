@@ -1,0 +1,20 @@
+Package: octopus
+Type: Package
+Title: Interactive Interface for Various Database Backends
+Version: 0.1.0
+Author: Marcus Codrescu
+Maintainer: Marcus Codrescu <m.codrescu@outlook.com>
+Description: Connect to various database backends including Postgres, Vertica, Snowflake, and more.
+    You can upload files, delete tables, download tables, preview tables, and send queries.
+License: MIT License
+Encoding: UTF-8
+LazyData: true
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Imports: 
+    DBI,
+    dplyr,
+    glue,
+    readr,
+    RPostgres
