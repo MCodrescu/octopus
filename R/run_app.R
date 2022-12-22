@@ -75,6 +75,36 @@ run_app <-
                     "Query"
                   )
                 ),
+
+
+                # Run Query Button
+                shiny::tags$li(
+                  class = "nav-item",
+                  id = "submitQuery",
+                  style = "display: none;",
+                  title = "Run Query",
+                  shiny::tags$a(
+                    class = "nav-link",
+                    role = "button",
+                    shiny::icon(
+                      name = "play"
+                    )
+                  )
+                ),
+                # Format Query Button
+                shiny::tags$li(
+                  class = "nav-item",
+                  id = "formatQuery",
+                  style = "display: none;",
+                  title = "Format Query",
+                  shiny::tags$a(
+                    class = "nav-link",
+                    role = "button",
+                    shiny::icon(
+                      name = "indent"
+                    )
+                  )
+                )
               )
             )
           )
@@ -179,34 +209,9 @@ run_app <-
             shiny::fileInput("newTableUpload", "Upload CSV", accept = ".csv", width = "100%"),
           ),
           shiny::div(
-            class = "col-10 col-lg-8 bg-light pb-2 pt-1 border rounded shadow",
+            class = "col-12 col-lg-10 bg-light pb-2 pt-1 border rounded shadow",
             id = "queryDiv",
             style = "display: none; height: 80vh;",
-
-            shiny::div(
-              class = "row mt-0 pt-0",
-              shiny::div(
-                class = "col",
-                shiny::tags$button(
-                  id = "formatQuery",
-                  class = "btn btn-sm btn-outline-none float-right",
-                  shiny::tags$img(
-                    src = "info-square.svg",
-                    style = "width: 20px; height: 20px;"
-                  ),
-                  " Format "
-                ),
-                shiny::tags$button(
-                  id = "submitQuery",
-                  class = "btn btn-sm btn-outline-none float-right",
-                  shiny::tags$img(
-                    src = "caret-right-square.svg",
-                    style = "width: 20px; height: 20px;"
-                  ),
-                  " Run "
-                ),
-              )
-            ),
 
             shiny::div(
               class = "row h-100 pt-1",
@@ -216,7 +221,7 @@ run_app <-
                 shinyAce::aceEditor(
                   "query",
                   mode = "pgsql",
-                  height = "95%",
+                  height = "100%",
                   value = "",
                   showPrintMargin = FALSE,
                   fontSize = 16,
@@ -244,6 +249,8 @@ run_app <-
         if (connectionStatus) {
           shinyjs::hideElement("connectionDiv")
           shinyjs::hideElement("queryDiv")
+          shinyjs::hideElement("submitQuery")
+          shinyjs::hideElement("formatQuery")
           shinyjs::showElement("viewDiv")
         } else {
           shiny::showNotification("Please connect to a database first")
@@ -255,6 +262,8 @@ run_app <-
           shinyjs::hideElement("connectionDiv")
           shinyjs::hideElement("viewDiv")
           shinyjs::showElement("queryDiv")
+          shinyjs::showElement("submitQuery")
+          shinyjs::showElement("formatQuery")
         } else {
           shiny::showNotification("Please connect to a database first")
         }
@@ -263,6 +272,8 @@ run_app <-
       shinyjs::onclick("connectionNav", {
         shinyjs::hideElement("viewDiv")
         shinyjs::hideElement("queryDiv")
+        shinyjs::hideElement("submitQuery")
+        shinyjs::hideElement("formatQuery")
         shinyjs::showElement("connectionDiv")
       })
 
@@ -760,6 +771,12 @@ run_app <-
           )
 
         })
+      })
+
+      # Disconnect from DB
+      session$onSessionEnded(function() {
+        try(DBI::dbDisconnect(con))
+        shiny::stopApp()
       })
 
     }
