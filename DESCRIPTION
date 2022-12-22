@@ -15,9 +15,11 @@ Config/testthat/edition: 3
 Imports: 
     DBI,
     dplyr,
+    DT,
     glue,
     readr,
     RPostgres,
     shiny,
     shinyAce,
     shinyjs
+RoxygenNote: 7.2.1
