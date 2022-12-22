@@ -1,6 +1,8 @@
 #' Run Octopus App
 #' @description This function runs the app.
 #'
+#' @param options A named list of options to be passed along to shinyApp().
+#'
 #' @importFrom shiny shinyApp
 #' @importFrom shiny showNotification
 #' @importFrom shiny updateSelectInput
@@ -13,7 +15,7 @@
 #' @export
 #'
 run_app <-
-  function(){
+  function(options){
     ui <- shiny::bootstrapPage(
       theme = bslib::bs_theme(version = 5),
 
@@ -309,6 +311,8 @@ run_app <-
                 message <- connection_result[[2]]
                 schemas <- get_schemas_postgres(con)
                 get_tables <- get_tables_postgres
+                get_n_rows <- get_n_rows_postgres
+                get_preview <- get_preview_postgres
                 reesult <- "Success"
 
               } else {
@@ -773,6 +777,102 @@ run_app <-
         })
       })
 
+      # View tables on click view button
+      shinyjs::onclick("viewTable", {
+
+
+        # Get the number of rows
+        n_rows <- tryCatch({
+          get_n_rows(
+            con,
+            input$schema,
+            input$tables
+          )
+        }, error = function(error){
+          shiny::showNotification(error$message)
+        })
+
+
+        # Show the modal
+        shiny::showModal(
+          shiny::modalDialog(
+            easyClose = TRUE,
+            size = "xl",
+            shiny::h3(
+              glue::glue("Preview {input$tables} in {input$schema}")
+            ),
+            shiny::p(
+              glue::glue("{n_rows} rows")
+            ),
+            shiny::div(
+              class = "table-responsive",
+              style = "max-height: 70vh;",
+              DT::renderDataTable(
+                options = list(dom = "t", paging = FALSE, ordering = FALSE),
+                server = TRUE,
+                rownames = FALSE,
+                {
+                  result <- tryCatch({
+                    get_preview(con, input$schema, input$tables)
+                  }, error = function(error){
+                    data.frame(
+                      error = error$message
+                    )
+                  })
+                  result
+                }
+              )
+            ),
+            footer = shiny::tagList(
+              shiny::tags$button(
+                class = "btn btn-outline-secondary",
+                id = "downloadPreview",
+                style = "display: none;",
+                "Download"
+              ),
+              shiny::modalButton("Dismiss")
+            )
+          )
+        )
+
+        # Don't allow downloading if query result too big
+        if (n_rows < 50000 & n_rows != 0) {
+          shinyjs::showElement("downloadPreview")
+        } else {
+          shinyjs::hideElement("downloadPreview")
+        }
+
+        # Download the query result
+        shinyjs::onclick("downloadPreview", {
+          result <- tryCatch(
+            {
+
+              # TODO Edit this function
+              # Get query and write to csv
+              readr::write_csv(
+                DBI::dbGetQuery(
+                  con,
+                  glue::glue(
+                    "SELECT * FROM {table_sql}"
+                  )
+                ),
+                glue::glue(
+                  "{Sys.getenv(\"USERPROFILE\")}\\Downloads\\query_result_{format(Sys.time(), \"%Y-%m-%d-%H%M%S\")}.csv"
+                )
+              )
+              result <-
+                glue::glue(
+                  "Downloaded Successfully to {Sys.getenv(\"USERPROFILE\")}\\Downloads"
+                )
+            },
+            error = function(error) {
+              result <- error$message
+            }
+          )
+          shiny::showNotification(result)
+        })
+      })
+
       # Disconnect from DB
       session$onSessionEnded(function() {
         try(DBI::dbDisconnect(con))
@@ -781,5 +881,5 @@ run_app <-
 
     }
 
-    shiny::shinyApp(ui, server)
+    shiny::shinyApp(ui, server, options = options)
   }

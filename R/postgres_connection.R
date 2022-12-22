@@ -124,7 +124,7 @@ get_n_rows_postgres <- function(con, schema, table) {
 #' @param table A string containing the table name.
 #'
 #' @return A data frame of 100 rows from the database table.
-get_preview_postgres <- function(con, shema, table) {
+get_preview_postgres <- function(con, schema, table) {
   dbGetQuery(
     con,
     glue(
