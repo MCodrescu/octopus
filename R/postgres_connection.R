@@ -66,24 +66,50 @@ get_tables_postgres <- function(con, schema) {
 #' @importFrom dplyr pull
 #'
 #' @return An integer for the number of rows in the table.
-get_n_rows_postgres <- function(con, schema, table) {
-  DBI::dbGetQuery(
-    con,
-    glue::glue(
-      "
-      WITH cte1 AS (
-        SELECT *
-        FROM \"{schema}\".\"{table}\"
+get_n_rows_postgres <- function(con, schema, table, query = "") {
+
+  if (query != ""){
+    query_string <-
+      glue::glue(
+        "
+        WITH cte1 AS (
+          {query}
+        )
+        SELECT
+          COUNT(*)
+        FROM cte1
+        "
       )
-      SELECT
-        COUNT(*)
-      FROM cte1
-      "
-    )
-  ) |>
-    dplyr::pull(
-      count
-    )
+  } else {
+    query_string <-
+      glue::glue(
+        "
+        WITH cte1 AS (
+          SELECT *
+          FROM \"{schema}\".\"{table}\"
+        )
+        SELECT
+          COUNT(*)
+        FROM cte1
+        "
+      )
+  }
+
+  result <-
+    tryCatch({
+      result <-
+        DBI::dbGetQuery(
+          con,
+          query_string
+        ) |>
+        dplyr::pull(
+          count
+        )
+    }, error = function(error){
+      result <- 0
+    })
+
+
 }
 
 #' A Database Specific Function for Retrieving Table Previews

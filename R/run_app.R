@@ -307,42 +307,6 @@ run_app <-
           )
         )
 
-        # Don't allow downloading if query result too big
-        if (n_rows < 50000 & n_rows != 0) {
-          shinyjs::showElement("downloadPreview")
-        } else {
-          shinyjs::hideElement("downloadPreview")
-        }
-
-        # Download the query result
-        shinyjs::onclick("downloadPreview", {
-          result <- tryCatch(
-            {
-
-              # TODO Edit this function
-              # Get query and write to csv
-              readr::write_csv(
-                DBI::dbGetQuery(
-                  con,
-                  glue::glue(
-                    "SELECT * FROM {table_sql}"
-                  )
-                ),
-                glue::glue(
-                  "{Sys.getenv(\"USERPROFILE\")}\\Downloads\\query_result_{format(Sys.time(), \"%Y-%m-%d-%H%M%S\")}.csv"
-                )
-              )
-              result <-
-                glue::glue(
-                  "Downloaded Successfully to {Sys.getenv(\"USERPROFILE\")}\\Downloads"
-                )
-            },
-            error = function(error) {
-              result <- error$message
-            }
-          )
-          shiny::showNotification(result)
-        })
       })
 
       #-------------------------------------------------------------------------
@@ -392,86 +356,251 @@ run_app <-
 
       #-------------------------------------------------------------------------
 
-        # Increase file upload limit
-        options(shiny.maxRequestSize = 2000 * 1024^2)
+      # Increase file upload limit
+      options(shiny.maxRequestSize = 2000 * 1024^2)
 
-        # Upload file to DB
-        shiny::observeEvent(input$newTableUpload, {
+      # Upload file to DB
+      shiny::observeEvent(input$newTableUpload, {
 
-          # Read file
-          file <- input$newTableUpload
-          req(file)
-          new_table <- rio::import(
-            file$datapath
+        # Read file
+        file <- input$newTableUpload
+        req(file)
+        new_table <- rio::import(
+          file$datapath
+        )
+
+        shiny::showModal(
+          shiny::modalDialog(
+            easyClose = TRUE,
+            size = "s",
+            shiny::tagList(
+              shiny::textInput(
+                "newTableName",
+                "Confirm Table Name",
+                value = gsub(".csv", "", file$name)
+              ),
+              shiny::selectInput(
+                "cleanColumnNames",
+                "Clean column names?",
+                choices = c("Yes", "No"),
+                selected = "Yes"
+              ),
+              shiny::selectInput(
+                "tempTable",
+                "Temporary table?",
+                choices = c("Yes", "No"),
+                selected = "Yes"
+              )
+            ),
+            footer = shiny::tagList(
+              shiny::tags$button(
+                id = "confirmNewTableName",
+                class = "btn btn-outline-primary",
+                "data-bs-dismiss" = "modal",
+                "Confirm"
+              )
+            )
+          )
+        )
+
+        shinyjs::onclick("confirmNewTableName", {
+          if (input$cleanColumnNames == "Yes") {
+            new_table <-
+              janitor::clean_names(new_table)
+          }
+
+          # Write data frame to DB
+          result <- write_table(
+            con,
+            schema = input$schema,
+            table_name = input$newTableName,
+            data = new_table,
+            temporary = ifelse(
+              input$tempTable == "Yes",
+              TRUE,
+              FALSE
+            )
           )
 
+          # Show result
+          showNotification(result, duration = 3)
+
+          # Update select input
+          current_tables <- get_tables(con, schemas[1])
+          shiny::updateSelectizeInput(
+            session,
+            "tables",
+            choices = current_tables,
+            selected = current_tables[1],
+            server = TRUE
+          )
+        })
+      })
+
+      #-------------------------------------------------------------------------
+
+      # Allow submitting queries
+      shinyjs::onclick("submitQuery", {
+
+        # Get the query
+        query <- input$query
+
+        # Get the number of rows
+        n_rows <- get_n_rows(
+          con,
+          schema = input$schema,
+          table = input$tables,
+          query = query
+        )
+
+        if(n_rows > 50000){
+          shiny::showNotification(
+            "Your query returned a result too large.
+              Please narrow down the result."
+          )
+        } else {
+
+          # Set search path
+          if (driver %in% c("PqConnection", "Vertica Database")){
+            DBI::dbSendQuery(
+              con,
+              glue::glue(
+                "SET search_path TO public, {input$schema}"
+              )
+            )
+          } else if (driver == "Snowflake"){
+            DBI::dbSendQuery(
+              con,
+              glue::glue(
+                "USE SCHEMA {input$schema}"
+              )
+            )
+          }
+
+          # Check if it is a select statement
+          if (grepl("SELECT|Select|select", query) & !grepl("CREATE", query)) {
+            result <- tryCatch(
+              {
+
+                # Get the result
+                DBI::dbGetQuery(con, query)
+
+              },
+              error = function(error) {
+                result <- data.frame(result = error$message)
+              }
+            )
+
+          } else {
+            result <- tryCatch(
+              {
+
+                # Send the query
+                DBI::dbSendQuery(con, query)
+                result <- data.frame(result = "Success")
+
+              },
+              error = function(error) {
+                result <- data.frame(result = error$message)
+              }
+            )
+          }
+
+          # Show query result
           shiny::showModal(
             shiny::modalDialog(
               easyClose = TRUE,
-              size = "s",
-              shiny::tagList(
-                shiny::textInput(
-                  "newTableName",
-                  "Confirm Table Name",
-                  value = gsub(".csv", "", file$name)
-                ),
-                shiny::selectInput(
-                  "cleanColumnNames",
-                  "Clean column names?",
-                  choices = c("Yes", "No"),
-                  selected = "Yes"
-                ),
-                shiny::selectInput(
-                  "tempTable",
-                  "Temporary table?",
-                  choices = c("Yes", "No"),
-                  selected = "Yes"
+              size = "xl",
+              shiny::h3("Query Preview"),
+              shiny::p(
+                glue::glue("{n_rows} rows")
+              ),
+              shiny::div(
+                class = "table-responsive",
+                style = "max-height: 70vh;",
+                DT::renderDataTable(
+                  options = list(dom = "t", paging = FALSE),
+                  server = FALSE,
+                  rownames = FALSE,
+                  {
+                    result
+                  }
                 )
               ),
               footer = shiny::tagList(
                 shiny::tags$button(
-                  id = "confirmNewTableName",
-                  class = "btn btn-outline-primary",
-                  "data-bs-dismiss" = "modal",
-                  "Confirm"
-                )
+                  class = "btn btn-outline-secondary",
+                  id = "downloadQuery",
+                  style = "display: none;",
+                  "Download"
+                ),
+                shiny::modalButton("Dismiss")
               )
             )
           )
 
-          shinyjs::onclick("confirmNewTableName", {
-            if (input$cleanColumnNames == "Yes") {
-              new_table <-
-                janitor::clean_names(new_table)
-            }
+          # Don't allow downloading if query result too big
+          if (n_rows < 50000 & n_rows != 0) {
+            shinyjs::showElement("downloadQuery")
+          } else {
+            shinyjs::hideElement("downloadQuery")
+          }
 
-            # Write data frame to DB
-            result <- write_table(
-              con,
-              schema = input$schema,
-              table_name = input$newTableName,
-              data = new_table,
-              temporary = ifelse(
-                input$tempTable == "Yes",
-                TRUE,
-                FALSE
-              )
+          # Download the query result
+          shinyjs::onclick("downloadQuery", {
+            result <- tryCatch(
+              {
+
+                # Set search path
+                if (driver %in% c("PqConnection", "Vertica Database")){
+                  DBI::dbSendQuery(
+                    con,
+                    glue::glue(
+                      "SET search_path TO public, {input$schema}"
+                    )
+                  )
+                } else if (driver == "Snowflake"){
+                  DBI::dbSendQuery(
+                    con,
+                    glue::glue(
+                      "USE SCHEMA {input$schema}"
+                    )
+                  )
+                }
+
+                # Get query and write to csv
+                readr::write_csv(
+                  DBI::dbGetQuery(con, input$query),
+                  glue::glue(
+                    "{Sys.getenv(\"USERPROFILE\")}\\Downloads\\query_result_{format(Sys.time(), \"%Y-%m-%d-%H%M%S\")}.csv"
+                  )
+                )
+                result <-
+                  glue::glue(
+                    "Downloaded Successfully to {Sys.getenv(\"USERPROFILE\")}\\Downloads"
+                  )
+              },
+              error = function(error) {
+                result <- error$message
+              }
             )
 
-            # Show result
-            showNotification(result, duration = 3)
-
-            # Update select input
-            current_tables <- get_tables(con, schemas[1])
-            shiny::updateSelectizeInput(
-              session,
-              "tables",
-              choices = current_tables,
-              selected = current_tables[1],
-              server = TRUE
-            )
+            shiny::showNotification(result)
           })
-        })
+
+          # Update select input
+          current_tables <- get_tables(con, schemas[1])
+          shiny::updateSelectizeInput(
+            session,
+            "tables",
+            choices = current_tables,
+            selected = current_tables[1],
+            server = TRUE
+          )
+
+        }
+
+      })
 
 
       # Disconnect from DB
