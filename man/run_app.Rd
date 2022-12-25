@@ -4,7 +4,12 @@
 \alias{run_app}
 \title{Run Octopus App}
 \usage{
-run_app()
+run_app(con, options = list())
+}
+\arguments{
+\item{con}{A database connection object. The result of DBI::dbConnect().}
+
+\item{options}{A named list of options to be passed along to shinyApp().}
 }
 \value{
 An RShiny instance.

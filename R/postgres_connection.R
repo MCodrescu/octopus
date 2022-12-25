@@ -105,3 +105,28 @@ get_preview_postgres <- function(con, schema, table) {
     )
   )
 }
+
+
+#' A Database Specific Function for Dropping Tables
+#'
+#' @param con A database connection object.
+#' @param schema A string containing the schema name.
+#' @param table A string containing the table name.
+#'
+#' @return A result string. Either "Success" or an error message.
+delete_table_postgres <- function(con, schema, table){
+
+  result <-
+    tryCatch({
+      DBI::dbSendQuery(
+        con,
+        glue::glue(
+          "DROP TABLE \"{schema}\".\"{table}\""
+        )
+      )
+      result <- "Success"
+    }, error = function(error){
+      result <- error$message
+    })
+
+}

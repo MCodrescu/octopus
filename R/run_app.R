@@ -204,6 +204,7 @@ run_app <-
         get_tables <- get_tables_postgres
         get_n_rows <- get_n_rows_postgres
         get_preview <- get_preview_postgres
+        delete_table <- delete_table_postgres
 
       } else if (driver == "Snowflake"){
         # TODO
@@ -343,9 +344,55 @@ run_app <-
         })
       })
 
+      #-------------------------------------------------------------------------
+
+      # Allow deleting a table
+      shinyjs::onclick("deleteTable", {
+        table <- input$tables
+        shiny::showModal(
+          shiny::modalDialog(
+            easyClose = TRUE,
+            shiny::h3("Confirm Deletion"),
+            shiny::p(glue("Are you sure you want to delete the table: {table}?")),
+            footer = shiny::tags$button(
+              id = "confirmDelete",
+              class = "btn btn-outline-danger",
+              "Confirm"
+            )
+          )
+        )
+
+        # Confirm delete
+        shinyjs::onclick("confirmDelete", asis = TRUE, {
+          shiny::removeModal()
+
+          result <- delete_table(
+            con,
+            input$schema,
+            input$tables
+          )
+
+          # Notify success
+          shiny::showNotification(result)
+
+          # Update select input
+          current_tables <- get_tables(con, schemas[1])
+          shiny::updateSelectizeInput(
+            session,
+            "tables",
+            choices = current_tables,
+            selected = current_tables[1],
+            server = TRUE
+          )
+
+        })
+      })
+
+
+
+
       # Disconnect from DB
       session$onSessionEnded(function() {
-        try(DBI::dbDisconnect(con))
         shiny::stopApp()
       })
 
