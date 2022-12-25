@@ -17,6 +17,7 @@ Imports:
     dplyr,
     DT,
     glue,
+    httr,
     readr,
     rio,
     RPostgres,
