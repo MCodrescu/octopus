@@ -148,7 +148,7 @@ run_app <-
             ),
 
             # File upload to database
-            shiny::fileInput("newTableUpload", "Upload CSV", accept = ".csv", width = "100%"),
+            shiny::fileInput("newTableUpload", "Upload CSV", width = "100%"),
           ),
           shiny::div(
             class = "col-12 col-lg-10 bg-light pb-2 pt-1 border rounded shadow",
@@ -205,6 +205,7 @@ run_app <-
         get_n_rows <- get_n_rows_postgres
         get_preview <- get_preview_postgres
         delete_table <- delete_table_postgres
+        write_table <- write_table_postgres
 
       } else if (driver == "Snowflake"){
         # TODO
@@ -389,6 +390,88 @@ run_app <-
       })
 
 
+      #-------------------------------------------------------------------------
+
+        # Increase file upload limit
+        options(shiny.maxRequestSize = 2000 * 1024^2)
+
+        # Upload file to DB
+        shiny::observeEvent(input$newTableUpload, {
+
+          # Read file
+          file <- input$newTableUpload
+          req(file)
+          new_table <- rio::import(
+            file$datapath
+          )
+
+          shiny::showModal(
+            shiny::modalDialog(
+              easyClose = TRUE,
+              size = "s",
+              shiny::tagList(
+                shiny::textInput(
+                  "newTableName",
+                  "Confirm Table Name",
+                  value = gsub(".csv", "", file$name)
+                ),
+                shiny::selectInput(
+                  "cleanColumnNames",
+                  "Clean column names?",
+                  choices = c("Yes", "No"),
+                  selected = "Yes"
+                ),
+                shiny::selectInput(
+                  "tempTable",
+                  "Temporary table?",
+                  choices = c("Yes", "No"),
+                  selected = "Yes"
+                )
+              ),
+              footer = shiny::tagList(
+                shiny::tags$button(
+                  id = "confirmNewTableName",
+                  class = "btn btn-outline-primary",
+                  "data-bs-dismiss" = "modal",
+                  "Confirm"
+                )
+              )
+            )
+          )
+
+          shinyjs::onclick("confirmNewTableName", {
+            if (input$cleanColumnNames == "Yes") {
+              new_table <-
+                janitor::clean_names(new_table)
+            }
+
+            # Write data frame to DB
+            result <- write_table(
+              con,
+              schema = input$schema,
+              table_name = input$newTableName,
+              data = new_table,
+              temporary = ifelse(
+                input$tempTable == "Yes",
+                TRUE,
+                FALSE
+              )
+            )
+
+            # Show result
+            showNotification(result, duration = 3)
+
+            # Update select input
+            current_tables <- get_tables(con, schemas[1])
+            shiny::updateSelectizeInput(
+              session,
+              "tables",
+              choices = current_tables,
+              selected = current_tables[1],
+              server = TRUE
+            )
+          })
+        })
 
 
       # Disconnect from DB

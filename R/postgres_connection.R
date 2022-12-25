@@ -130,3 +130,42 @@ delete_table_postgres <- function(con, schema, table){
     })
 
 }
+
+
+#' A Database Specific Function for Uploading Data Frames
+#'
+#' @param con A database connection object.
+#' @param schema A string containing the schema name.
+#' @param table_name A string for the new table name.
+#' @param data A data frame to be uploaded.
+#' @param temporary A logical value. Should the table be temporary?
+#'
+#' @return A result string. Either "Success" or an error message.
+write_table_postgres <-
+  function(
+    con,
+    schema,
+    table_name,
+    data,
+    temporary = FALSE
+  ){
+
+    result <-
+      tryCatch({
+        DBI::dbWriteTable(
+          con,
+          name = DBI::Id(
+            table = table_name,
+            schema = schema
+          ),
+          value = data.frame(data),
+          overwrite = TRUE,
+          temporary = temporary
+        )
+
+        result <- "Success"
+      }, error = function(error){
+        result <- error$message
+      })
+
+}
