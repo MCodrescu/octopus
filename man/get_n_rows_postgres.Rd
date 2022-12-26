@@ -4,7 +4,7 @@
 \alias{get_n_rows_postgres}
 \title{A Database Specific Function to Retrieve the Number of Rows of a Table}
 \usage{
-get_n_rows_postgres(con, schema, table)
+get_n_rows_postgres(con, schema, table, query = "")
 }
 \arguments{
 \item{con}{A database connection object.}

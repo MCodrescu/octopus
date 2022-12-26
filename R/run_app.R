@@ -7,6 +7,10 @@
 #' @importFrom shiny shinyApp
 #' @importFrom shiny showNotification
 #' @importFrom shiny updateSelectInput
+#' @importFrom shiny tags
+#' @importFrom shiny div
+#' @importFrom shiny p
+#' @importFrom shiny h3
 #' @importFrom shinyjs onclick
 #' @importFrom shinyjs hideElement
 #' @importFrom shinyjs showElement
@@ -34,7 +38,10 @@ run_app <-
             class = "container-fluid",
             shiny::tags$a(
               class = "navbar-brand",
-              "Database App"
+              shiny::icon(
+                "octopus-deploy"
+              ),
+              "Octopus"
             ),
             shiny::tags$button(
               class = "navbar-toggler",
@@ -55,7 +62,7 @@ run_app <-
                     id = "viewNav",
                     role = "button",
                     "data-bs-toggle" = "dropdown",
-                    "View"
+                    "Manage"
                   ),
                 ),
                 shiny::tags$li(
@@ -116,13 +123,13 @@ run_app <-
             id = "viewDiv",
 
             # Header
-            shiny::tags$h3(class = "text-center", "View Tables"),
+            shiny::tags$h3(class = "text-center", "Manage Database"),
 
             # Select schema
-            shiny::selectInput("schema", "Schema", choices = c("Loading..."), width = "100%", ),
+            shiny::selectInput("schema", "Schemas", choices = c("Loading..."), width = "100%", ),
 
             # Select table
-            shiny::selectInput("tables", "Table", choices = c("Loading..."), width = "100%"),
+            shiny::selectInput("tables", "Tables", choices = c("Loading..."), width = "100%"),
             shiny::div(
               class = "row justify-content-between py-3",
 
@@ -132,7 +139,7 @@ run_app <-
                 shiny::tags$button(
                   id = "viewTable",
                   class = "btn btn-outline-primary w-100",
-                  "View"
+                  "View Table"
                 )
               ),
 
@@ -142,13 +149,19 @@ run_app <-
                 shiny::tags$button(
                   id = "deleteTable",
                   class = "btn btn-outline-danger w-100",
-                  "Delete"
+                  "Drop Table"
                 )
               )
             ),
 
             # File upload to database
-            shiny::fileInput("newTableUpload", "Upload CSV", width = "100%"),
+            shiny::fileInput(
+              "newTableUpload",
+              "Upload File",
+              accept = c(".csv", ".xlsx"),
+              width = "100%"
+            ),
+
           ),
           shiny::div(
             class = "col-12 col-lg-10 bg-light pb-2 pt-1 border rounded shadow",
