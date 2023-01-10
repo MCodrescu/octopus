@@ -37,10 +37,7 @@ run_app <-
           shiny::div(
             class = "container-fluid",
             shiny::tags$a(
-              class = "navbar-brand",
-              shiny::icon(
-                "octopus-deploy"
-              ),
+              class = "navbar-brand mb-1",
               "Octopus"
             ),
             shiny::tags$button(
@@ -104,7 +101,20 @@ run_app <-
                       name = "indent"
                     )
                   )
+                ),
+
+                # Selected Schema
+                shiny::tags$li(
+                  class = "nav-item",
+                  id = "selectedSchema",
+                  style = "display: none;",
+                  shiny::tags$a(
+                    class = "nav-link",
+                    id = "selectedSchemaContent",
+                    role = "button"
+                  )
                 )
+
               )
             )
           )
@@ -196,6 +206,7 @@ run_app <-
         shinyjs::hideElement("queryDiv")
         shinyjs::hideElement("submitQuery")
         shinyjs::hideElement("formatQuery")
+        shinyjs::hideElement("selectedSchema")
         shinyjs::showElement("viewDiv")
       })
 
@@ -204,6 +215,13 @@ run_app <-
         shinyjs::showElement("queryDiv")
         shinyjs::showElement("submitQuery")
         shinyjs::showElement("formatQuery")
+        shinyjs::showElement("selectedSchema")
+        shinyjs::html(
+          "selectedSchemaContent",
+          glue::glue(
+            "Current Schema: {input$schema}"
+          )
+        )
       })
 
 
@@ -221,7 +239,13 @@ run_app <-
         write_table <- write_table_postgres
 
       } else if (driver == "Snowflake"){
-        # TODO
+        schemas <- get_schemas_snowflake(con)
+        get_tables <- get_tables_snowflake
+        get_n_rows <- get_n_rows_snowflake
+        get_preview <- get_preview_snowflake
+        delete_table <- delete_table_snowflake
+        write_table <- write_table_snowflake
+
 
       } else if (driver == "Vertica Database"){
         # TODO
@@ -533,7 +557,7 @@ run_app <-
                 style = "max-height: 70vh;",
                 DT::renderDataTable(
                   options = list(dom = "t", paging = FALSE),
-                  server = FALSE,
+                  server = TRUE,
                   rownames = FALSE,
                   {
                     result
