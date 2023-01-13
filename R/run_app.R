@@ -250,6 +250,13 @@ run_app <-
       } else if (driver == "Vertica Database"){
         # TODO
 
+      } else if (driver == "MySQLConnection"){
+        schemas <- get_schemas_mysql(con)
+        get_tables <- get_tables_mysql
+        get_n_rows <- get_n_rows_mysql
+        get_preview <- get_preview_mysql
+        delete_table <- delete_table_mysql
+        write_table <- write_table_mysql
       }
 
         # Update schema list
