@@ -1,5 +1,6 @@
-#' Run Octopus App
-#' @description This function runs the app.
+#' View Database Connection with Octopus
+#' @description This function opens a shiny instance where the database can
+#'   be viewed.
 #'
 #' @param con A database connection object. The result of DBI::dbConnect().
 #' @param options A named list of options to be passed along to shinyApp().
@@ -16,10 +17,10 @@
 #' @importFrom shinyjs showElement
 #'
 #'
-#' @return An RShiny instance.
+#' @return An R Shiny instance.
 #' @export
 #'
-run_app <-
+view_database <-
   function(con, options = list()){
     ui <- shiny::bootstrapPage(
       theme = bslib::bs_theme(version = 5),
@@ -497,7 +498,12 @@ run_app <-
           query = query
         )
 
-        if(n_rows > 50000){
+        # Catch query errors
+        if (query == ""){
+          shiny::showNotification(
+            "Please input a query"
+          )
+        } else if(n_rows > 50000){
           shiny::showNotification(
             "Your query returned a result too large.
               Please narrow down the result."
@@ -633,7 +639,7 @@ run_app <-
           })
 
           # Update select input
-          current_tables <- get_tables(con, schemas[1])
+          current_tables <- get_tables(con, input$schema)
           shiny::updateSelectizeInput(
             session,
             "tables",
