@@ -72,25 +72,21 @@ get_n_rows_postgres <- function(con, schema, table, query = "") {
     query_string <-
       glue::glue(
         "
-        WITH cte1 AS (
+        SELECT COUNT(*) AS count
+        FROM (
           {query}
-        )
-        SELECT
-          COUNT(*)
-        FROM cte1
+        ) AS subquery
         "
       )
   } else {
     query_string <-
       glue::glue(
         "
-        WITH cte1 AS (
-          SELECT *
-          FROM \"{schema}\".\"{table}\"
-        )
-        SELECT
-          COUNT(*)
-        FROM cte1
+        SELECT COUNT(*) AS count
+        FROM (
+            SELECT *
+            FROM \"{schema}\".\"{table}\"
+        ) AS subquery;
         "
       )
   }
