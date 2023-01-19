@@ -72,25 +72,23 @@ get_n_rows_snowflake <- function(con, schema, table, query = "") {
     query_string <-
       glue::glue(
         "
-        WITH cte1 AS (
-          {query}
-        )
         SELECT
           COUNT(*)
-        FROM cte1
+        FROM (
+          {query}
+        ) AS subquery;
         "
       )
   } else {
     query_string <-
       glue::glue(
         "
-        WITH cte1 AS (
-          SELECT *
-          FROM \"{schema}\".\"{table}\"
-        )
         SELECT
           COUNT(*)
-        FROM cte1
+        FROM (
+          SELECT *
+          FROM \"{schema}\".\"{table}\"
+        ) AS subquery;
         "
       )
   }
