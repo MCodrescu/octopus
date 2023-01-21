@@ -251,6 +251,9 @@ view_database <-
       } else if (driver == "Vertica Database"){
         # TODO
 
+      } else if (driver == "Teradata"){
+        # TODO
+
       } else if (driver == "MySQLConnection"){
         schemas <- get_schemas_mysql(con)
         get_tables <- get_tables_mysql
