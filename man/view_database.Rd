@@ -12,8 +12,9 @@ view_database(con, options = list())
 \item{options}{A named list of options to be passed along to shinyApp().}
 }
 \value{
-An RShiny instance.
+An R Shiny instance.
 }
 \description{
-This function runs the app.
+This function opens a shiny instance where the database can
+  be viewed.
 }

@@ -18,6 +18,7 @@ Imports:
     DT,
     glue,
     httr,
+    janitor,
     readr,
     rio,
     RPostgres,
