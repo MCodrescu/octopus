@@ -16,9 +16,7 @@ get_schemas_snowflake <- function(con) {
       ORDER BY schema_name;
       "
     ) |>
-    dplyr::pull(
-      SCHEMA_NAME
-    )
+    dplyr::pull(1)
 }
 
 #' A Database Specific Function to Retrieve All Database Tables
@@ -44,9 +42,8 @@ get_tables_snowflake <- function(con, schema) {
         "
       )
     ) |>
-      dplyr::pull(
-        TABLE_NAME
-      )
+      dplyr::pull(1)
+
   }, error = function(error){
     data.frame(
       error = error$message
@@ -101,9 +98,8 @@ get_n_rows_snowflake <- function(con, schema, table, query = "") {
           con,
           query_string
         ) |>
-        dplyr::pull(
-          1
-        )
+        dplyr::pull(1)
+
     }, error = function(error){
       print(error$message)
       result <- 0

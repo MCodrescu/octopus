@@ -22,7 +22,6 @@ Imports:
     janitor,
     readr,
     rio,
-    RPostgres,
     shiny,
     shinyAce,
     shinyjs

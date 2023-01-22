@@ -16,9 +16,7 @@ get_schemas_postgres <- function(con) {
       ORDER BY schema_name;
       "
     ) |>
-    dplyr::pull(
-      schema_name
-    )
+    dplyr::pull(1)
 }
 
 #' A Database Specific Function to Retrieve All Database Tables
@@ -37,16 +35,15 @@ get_tables_postgres <- function(con, schema) {
       con,
       glue::glue(
         "
-      SELECT *
+      SELECT table_name
       FROM information_schema.tables
       WHERE table_schema = '{schema}'
       ORDER BY table_name;
       "
       )
     ) |>
-      dplyr::pull(
-        table_name
-      )
+      dplyr::pull(1)
+
   }, error = function(error){
     data.frame(
       error = error$message
@@ -99,9 +96,8 @@ get_n_rows_postgres <- function(con, schema, table, query = "") {
           con,
           query_string
         ) |>
-        dplyr::pull(
-          count
-        )
+        dplyr::pull(1)
+
     }, error = function(error){
       result <- 0
     })

@@ -16,9 +16,7 @@ get_schemas_mysql <- function(con) {
       ORDER BY schema_name;
       "
     ) |>
-    dplyr::pull(
-      schema_name
-    )
+    dplyr::pull(1)
 }
 
 #' A Database Specific Function to Retrieve All Database Tables
@@ -44,9 +42,8 @@ get_tables_mysql <- function(con, schema) {
       "
       )
     ) |>
-      dplyr::pull(
-        table_name
-      )
+      dplyr::pull(1)
+
   }, error = function(error){
     data.frame(
       error = error$message
@@ -99,9 +96,8 @@ get_n_rows_mysql <- function(con, schema, table, query = "") {
           con,
           query_string
         ) |>
-        dplyr::pull(
-          1
-        )
+        dplyr::pull(1)
+
     }, error = function(error){
       result <- 0
     })
