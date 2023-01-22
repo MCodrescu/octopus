@@ -8,13 +8,35 @@
 #' @importFrom shiny shinyApp
 #' @importFrom shiny showNotification
 #' @importFrom shiny updateSelectInput
+#' @importFrom shiny updateSelectizeInput
 #' @importFrom shiny tags
 #' @importFrom shiny div
 #' @importFrom shiny p
 #' @importFrom shiny h3
+#' @importFrom shiny selectInput
+#' @importfrom shiny fileInput
+#' @importFrom shiny showModal
+#' @importFrom shiny modalDialog
+#' @importFrom shiny tagList
+#' @importFrom shiny modalButton
+#' @importFrom shiny removeModal
+#' @importFrom shiny observeEvent
+#' @importFrom shiny stopApp
+#' @importFrom shinyAce aceEditor
+#' @importfrom shinyAce updateAceEditor
 #' @importFrom shinyjs onclick
 #' @importFrom shinyjs hideElement
 #' @importFrom shinyjs showElement
+#' @importFrom shinyjs onevent
+#' @importFRom shinyjs html
+#' @importFrom glue glue
+#' @importFrom DT renderDataTable
+#' @improtFrom rio import
+#' @importFrom janitor clean_names
+#' @importFrom DBI dbSendQuery
+#' @importFrom DBI dbGetQuery
+#' @importFrom httr GET
+#' @importFrom httr use_proxy
 #'
 #'
 #' @return An R Shiny instance.
@@ -471,7 +493,7 @@ view_database <-
           )
 
           # Show result
-          showNotification(result, duration = 3)
+          shiny::showNotification(result, duration = 3)
 
           # Update select input
           current_tables <- get_tables(con, schemas[1])
