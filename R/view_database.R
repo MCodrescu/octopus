@@ -23,6 +23,7 @@
 #' @importFrom shiny observeEvent
 #' @importFrom shiny stopApp
 #' @importFrom shiny bootstrapPage
+#' @importFrom shiny req
 #' @importFrom shinyAce aceEditor
 #' @importFrom shinyAce updateAceEditor
 #' @importFrom shinyjs useShinyjs
@@ -39,6 +40,7 @@
 #' @importFrom DBI dbGetQuery
 #' @importFrom httr GET
 #' @importFrom httr use_proxy
+#' @importFrom httr content
 #' @importFrom bslib bs_theme
 #'
 #'
@@ -437,7 +439,7 @@ view_database <-
 
         # Read file
         file <- input$newTableUpload
-        req(file)
+        shiny::req(file)
         new_table <- rio::import(
           file$datapath
         )
@@ -702,7 +704,7 @@ view_database <-
             shinyAce::updateAceEditor(
               session = session,
               editorId = "query",
-              value = content(response, as = "parsed")$result
+              value = httr::content(response, as = "parsed")$result
             )
           },
           error = function(error) {
