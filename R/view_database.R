@@ -22,8 +22,10 @@
 #' @importFrom shiny removeModal
 #' @importFrom shiny observeEvent
 #' @importFrom shiny stopApp
+#' @importFrom shiny bootstrapPage
 #' @importFrom shinyAce aceEditor
 #' @importFrom shinyAce updateAceEditor
+#' @importFrom shinyjs useShinyjs
 #' @importFrom shinyjs onclick
 #' @importFrom shinyjs hideElement
 #' @importFrom shinyjs showElement
@@ -37,6 +39,7 @@
 #' @importFrom DBI dbGetQuery
 #' @importFrom httr GET
 #' @importFrom httr use_proxy
+#' @importFrom bslib bs_theme
 #'
 #'
 #' @return An R Shiny instance.
@@ -682,34 +685,30 @@ view_database <-
       # Reformat SQL code
       shinyjs::onclick("formatQuery", {
         original_query <- input$query
-        if (require(httr)) {
-          tryCatch(
-            {
-              response <-
-                httr::GET(
-                  glue::glue(
-                    "https://sqlformat.org/api/v1/format",
-                    "?reindent=1",
-                    "&keyword_case=upper",
-                    "&sql={URLencode(original_query)}"
-                  ),
-                  httr::use_proxy(
-                    Sys.getenv("https_proxy")
-                  )
+        tryCatch(
+          {
+            response <-
+              httr::GET(
+                glue::glue(
+                  "https://sqlformat.org/api/v1/format",
+                  "?reindent=1",
+                  "&keyword_case=upper",
+                  "&sql={URLencode(original_query)}"
+                ),
+                httr::use_proxy(
+                  Sys.getenv("https_proxy")
                 )
-              shinyAce::updateAceEditor(
-                session = session,
-                editorId = "query",
-                value = content(response, as = "parsed")$result
               )
-            },
-            error = function(error) {
-              shiny::showNotification(error$message)
-            }
-          )
-        } else {
-          shiny::showNotification("You must have httr package installed to format.")
-        }
+            shinyAce::updateAceEditor(
+              session = session,
+              editorId = "query",
+              value = content(response, as = "parsed")$result
+            )
+          },
+          error = function(error) {
+            shiny::showNotification(error$message)
+          }
+        )
       })
 
 
