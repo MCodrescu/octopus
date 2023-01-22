@@ -60,6 +60,7 @@ get_tables_mysql <- function(con, schema) {
 #' @param con A database connection object.
 #' @param schema A string containing the schema name.
 #' @param table A string containing the table name.
+#' @param query A string containing the query to send.
 #'
 #' @importFrom DBI dbGetQuery
 #' @importFrom glue glue
@@ -114,11 +115,14 @@ get_n_rows_mysql <- function(con, schema, table, query = "") {
 #' @param schema A string containing the schema name.
 #' @param table A string containing the table name.
 #'
+#' @importFrom DBI dbGetQuery
+#' @importFrom glue glue
+#'
 #' @return A data frame of 100 rows from the database table.
 get_preview_mysql <- function(con, schema, table) {
-  dbGetQuery(
+  DBI::dbGetQuery(
     con,
-    glue(
+    glue::glue(
       "
       SELECT *
       FROM `{schema}`.`{table}`
@@ -134,6 +138,9 @@ get_preview_mysql <- function(con, schema, table) {
 #' @param con A database connection object.
 #' @param schema A string containing the schema name.
 #' @param table A string containing the table name.
+#'
+#' @importFrom DBI dbSendQuery
+#' @importFrom glue glue
 #'
 #' @return A result string. Either "Success" or an error message.
 delete_table_mysql <- function(con, schema, table){
@@ -161,6 +168,9 @@ delete_table_mysql <- function(con, schema, table){
 #' @param table_name A string for the new table name.
 #' @param data A data frame to be uploaded.
 #' @param temporary A logical value. Should the table be temporary?
+#'
+#' @importFrom DBI dbWriteTable
+#' @importFrom DBI Id
 #'
 #' @return A result string. Either "Success" or an error message.
 write_table_mysql <-

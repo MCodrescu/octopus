@@ -6,13 +6,14 @@ Author: Marcus Codrescu
 Maintainer: Marcus Codrescu <m.codrescu@outlook.com>
 Description: Connect to various database backends including Postgres, Vertica, Snowflake, and more.
     You can upload files, delete tables, download tables, preview tables, and send queries.
-License: MIT License
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Imports: 
+    bslib,
     DBI,
     dplyr,
     DT,

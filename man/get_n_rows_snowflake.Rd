@@ -12,6 +12,8 @@ get_n_rows_snowflake(con, schema, table, query = "")
 \item{schema}{A string containing the schema name.}
 
 \item{table}{A string containing the table name.}
+
+\item{query}{A string containing the query to send.}
 }
 \value{
 An integer for the number of rows in the table.
