@@ -162,10 +162,21 @@ view_database <-
             shiny::tags$h3(class = "text-center", "Manage Database"),
 
             # Select schema
-            shiny::selectInput("schema", "Schemas", choices = c("Loading..."), width = "100%", ),
+            shiny::selectInput(
+              "schema",
+              "Schemas",
+              choices = c("Loading..."),
+              width = "100%"
+            ),
 
             # Select table
-            shiny::selectInput("tables", "Tables", choices = c("Loading..."), width = "100%"),
+            shiny::selectInput(
+              "tables",
+              "Tables",
+              choices = c("Loading..."),
+              width = "100%"
+            ),
+
             shiny::div(
               class = "row justify-content-between py-3",
 
@@ -414,7 +425,7 @@ view_database <-
           shiny::showNotification(result)
 
           # Update select input
-          current_tables <- get_tables(con, schemas[1])
+          current_tables <- get_tables(con, input$schema)
           shiny::updateSelectizeInput(
             session,
             "tables",
@@ -499,7 +510,7 @@ view_database <-
           shiny::showNotification(result, duration = 3)
 
           # Update select input
-          current_tables <- get_tables(con, schemas[1])
+          current_tables <- get_tables(con, input$schema)
           shiny::updateSelectizeInput(
             session,
             "tables",
