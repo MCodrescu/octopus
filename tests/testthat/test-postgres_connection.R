@@ -129,6 +129,27 @@ test_that(
   }
 )
 
+test_that(
+  "write_table correctly upload table",
+  {
+
+    res <- DBI::dbSendQuery(con, "CREATE SCHEMA example")
+    DBI::dbClearResult(res)
+
+    write_table_postgres(
+      con,
+      schema = "example",
+      table_name = "mtcars",
+      data = mtcars
+    )
+
+    expect_true(
+      "mtcars" %in% get_tables_postgres(con, schema = "example")
+    )
+
+  }
+)
+
 #-------------------------------------------------------------------------------
 
 DBI::dbDisconnect(con)
