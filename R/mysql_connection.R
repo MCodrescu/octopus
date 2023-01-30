@@ -178,17 +178,24 @@ write_table_mysql <-
     temporary = FALSE
   ){
 
+    res <- DBI::dbSendQuery(
+      con,
+      glue::glue(
+        "USE {schema}"
+      )
+    )
+
+    DBI::dbClearResult(res)
+
     result <-
       tryCatch({
         DBI::dbWriteTable(
           con,
-          name = DBI::Id(
-            table = table_name,
-            schema = schema
-          ),
+          name = table_name,
           value = data.frame(data),
           overwrite = TRUE,
-          temporary = temporary
+          temporary = temporary,
+          row.names = FALSE
         )
 
         result <- "Success"
