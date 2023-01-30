@@ -106,6 +106,29 @@ test_that(
   }
 )
 
+test_that(
+  "delete_table correctly drops the table",
+  {
+    expect_true(
+      "mtcars" %in% DBI::dbListTables(con)
+    )
+
+    expect_equal(
+      "Success",
+      delete_table_postgres(
+        con,
+        schema = "public",
+        table = "mtcars"
+      )
+    )
+
+    expect_false(
+      "mtcars" %in% DBI::dbListTables(con)
+    )
+
+  }
+)
+
 #-------------------------------------------------------------------------------
 
 DBI::dbDisconnect(con)
