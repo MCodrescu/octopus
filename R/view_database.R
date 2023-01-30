@@ -55,9 +55,8 @@ view_database <-
       # Initiate shinyjs
       shinyjs::useShinyjs(),
 
-      #-------------------------------------------------------------------------
+      # Navbar -----------------------------------------------------------------
 
-      # Navbar
       shiny::tags$div(
         class = "container-fluid pt-2",
         shiny::tags$nav(
@@ -149,9 +148,8 @@ view_database <-
         )
       ),
 
-      #-------------------------------------------------------------------------
+      # Main container----------------------------------------------------------
 
-      # Main container
       shiny::div(
         class = "container py-3",
         shiny::div(
@@ -229,7 +227,7 @@ view_database <-
 
     server <- function(input, output, session) {
 
-      # Navigation
+      # Navigation -------------------------------------------------------------
       shinyjs::onclick("viewNav", {
         shinyjs::hideElement("queryDiv")
         shinyjs::hideElement("submitQuery")
@@ -253,9 +251,7 @@ view_database <-
       })
 
 
-      #-------------------------------------------------------------------------
-
-      # Set database specific functions
+      # Database Functions -----------------------------------------------------
       driver <- class(con)
 
       if (driver == "PqConnection"){
@@ -290,6 +286,8 @@ view_database <-
         write_table <- write_table_mysql
       }
 
+      # Initialize Inputs -----------------------------------------------
+
         # Update schema list
         shiny::updateSelectizeInput(
           session,
@@ -322,7 +320,7 @@ view_database <-
         })
 
 
-      #-------------------------------------------------------------------------
+      # View Table ------------------------------------------------------------
 
       # View tables on click view button
       shinyjs::onclick("viewTable", {
@@ -384,7 +382,7 @@ view_database <-
 
       })
 
-      #-------------------------------------------------------------------------
+      # Delete Table -----------------------------------------------------------
 
       # Allow deleting a table
       shinyjs::onclick("deleteTable", {
@@ -429,7 +427,7 @@ view_database <-
       })
 
 
-      #-------------------------------------------------------------------------
+      # Upload Table -----------------------------------------------------------
 
       # Increase file upload limit
       options(shiny.maxRequestSize = 2000 * 1024^2)
@@ -512,7 +510,7 @@ view_database <-
         })
       })
 
-      #-------------------------------------------------------------------------
+      # Query ----------------------------------------------------------------
 
       # Allow submitting queries
       shinyjs::onclick("submitQuery", {
@@ -682,7 +680,7 @@ view_database <-
 
       })
 
-      #-------------------------------------------------------------------------
+      # Format -----------------------------------------------------------------
 
       # Reformat SQL code
       shinyjs::onclick("formatQuery", {
@@ -713,6 +711,8 @@ view_database <-
         )
       })
 
+
+      # Closing ----------------------------------------------------------------
 
       # Disconnect from DB
       session$onSessionEnded(function() {

@@ -2,6 +2,7 @@
 
 export(view_database)
 importFrom(DBI,Id)
+importFrom(DBI,dbClearResult)
 importFrom(DBI,dbGetQuery)
 importFrom(DBI,dbSendQuery)
 importFrom(DBI,dbWriteTable)
