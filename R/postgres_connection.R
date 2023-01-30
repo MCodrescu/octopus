@@ -136,6 +136,7 @@ get_preview_postgres <- function(con, schema, table) {
 #' @param table A string containing the table name.
 #'
 #' @importFrom DBI dbSendQuery
+#' @importFrom DBI dbClearResult
 #' @importFrom glue glue
 #'
 #' @return A result string. Either "Success" or an error message.
@@ -143,12 +144,13 @@ delete_table_postgres <- function(con, schema, table){
 
   result <-
     tryCatch({
-      DBI::dbSendQuery(
+      res <- DBI::dbSendQuery(
         con,
         glue::glue(
           "DROP TABLE \"{schema}\".\"{table}\""
         )
       )
+      DBI::dbClearResult(res)
       result <- "Success"
     }, error = function(error){
       result <- error$message
