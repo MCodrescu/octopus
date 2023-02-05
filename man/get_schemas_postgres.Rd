@@ -15,3 +15,4 @@ A character vector of all schemas in the database.
 \description{
 A Database Specific Function To Retrieve Database Schemas
 }
+\keyword{internal}

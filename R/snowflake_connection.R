@@ -1,4 +1,5 @@
 #' A Database Specific Function To Retrieve Database Schemas
+#' @keywords internal
 #'
 #' @param con A database connection object.
 #'
@@ -20,6 +21,7 @@ get_schemas_snowflake <- function(con) {
 }
 
 #' A Database Specific Function to Retrieve All Database Tables
+#' @keywords internal
 #'
 #' @param con A database connection object.
 #' @param schema A
@@ -53,6 +55,7 @@ get_tables_snowflake <- function(con, schema) {
 }
 
 #' A Database Specific Function to Retrieve the Number of Rows of a Table
+#' @keywords internal
 #'
 #' @param con A database connection object.
 #' @param schema A string containing the schema name.
@@ -109,6 +112,7 @@ get_n_rows_snowflake <- function(con, schema, table, query = "") {
 }
 
 #' A Database Specific Function for Retrieving Table Previews
+#' @keywords internal
 #'
 #' @param con A database connection object.
 #' @param schema A string containing the schema name.
@@ -133,6 +137,7 @@ get_preview_snowflake <- function(con, schema, table) {
 
 
 #' A Database Specific Function for Dropping Tables
+#' @keywords internal
 #'
 #' @param con A database connection object.
 #' @param schema A string containing the schema name.
@@ -161,6 +166,7 @@ delete_table_snowflake <- function(con, schema, table){
 
 
 #' A Database Specific Function for Uploading Data Frames
+#' @keywords internal
 #'
 #' @param con A database connection object.
 #' @param schema A string containing the schema name.

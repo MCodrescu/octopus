@@ -19,3 +19,4 @@ A result string. Either "Success" or an error message.
 \description{
 A Database Specific Function for Dropping Tables
 }
+\keyword{internal}

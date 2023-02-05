@@ -1,4 +1,5 @@
 #' A Database Specific Function To Retrieve Database Schemas
+#' @keywords internal
 #'
 #' @param con A database connection object.
 #'
@@ -20,6 +21,7 @@ get_schemas_postgres <- function(con) {
 }
 
 #' A Database Specific Function to Retrieve All Database Tables
+#' @keywords internal
 #'
 #' @param con A database connection object.
 #' @param schema A
@@ -53,6 +55,7 @@ get_tables_postgres <- function(con, schema) {
 }
 
 #' A Database Specific Function to Retrieve the Number of Rows of a Table
+#' @keywords internal
 #'
 #' @param con A database connection object.
 #' @param schema A string containing the schema name.
@@ -106,6 +109,7 @@ get_n_rows_postgres <- function(con, schema, table, query = "") {
 }
 
 #' A Database Specific Function for Retrieving Table Previews
+#' @keywords internal
 #'
 #' @param con A database connection object.
 #' @param schema A string containing the schema name.
@@ -130,6 +134,7 @@ get_preview_postgres <- function(con, schema, table) {
 
 
 #' A Database Specific Function for Dropping Tables
+#' @keywords internal
 #'
 #' @param con A database connection object.
 #' @param schema A string containing the schema name.
@@ -160,6 +165,7 @@ delete_table_postgres <- function(con, schema, table){
 
 
 #' A Database Specific Function for Uploading Data Frames
+#' @keywords internal
 #'
 #' @param con A database connection object.
 #' @param schema A string containing the schema name.

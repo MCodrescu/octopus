@@ -21,3 +21,4 @@ An integer for the number of rows in the table.
 \description{
 A Database Specific Function to Retrieve the Number of Rows of a Table
 }
+\keyword{internal}

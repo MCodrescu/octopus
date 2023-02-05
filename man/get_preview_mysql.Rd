@@ -19,3 +19,4 @@ A data frame of 100 rows from the database table.
 \description{
 A Database Specific Function for Retrieving Table Previews
 }
+\keyword{internal}
