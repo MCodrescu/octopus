@@ -295,6 +295,14 @@ view_database <-
         get_preview <- get_preview_mysql
         delete_table <- delete_table_mysql
         write_table <- write_table_mysql
+
+      } else if (driver == "SQLiteConnection"){
+        schemas <- get_schemas_sqlite(con)
+        get_tables <- get_tables_sqlite
+        get_n_rows <- get_n_rows_sqlite
+        get_preview <- get_preview_sqlite
+        delete_table <- delete_table_sqlite
+        write_table <- write_table_sqlite
       }
 
       # Initialize Inputs -----------------------------------------------
