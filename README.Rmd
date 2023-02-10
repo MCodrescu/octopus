@@ -19,25 +19,41 @@ knitr::opts_chunk$set(
 
 <!-- badges: end -->
 
-The goal of octopus is to allow R users to visually interact with databases. The package has database specific functions for viewing tables, uploading files, sending queries, and more.
+The *octopus* package is an SQL editor built entirely in R. You can preview tables, upload files, send queries, and more.
 
-All database credentials are handled by the R user. Simply pass a supported database connection object to the function view_database() and *octopus* will start a shiny application allowing you to interact with the database.
+All database credentials are handled by the R user. Simply pass a supported database connection object created with DBI::dbConnect() to the function octopus::view_database() and *octopus* will start a shiny application allowing you to interact with the database.
 
-![octopus Main Page](images/octopusMainPage.png)
-
-![octopusQueryPage](images/octopusQueryPage.png)
+![Octopus User Interface](images/octopusMainPage1.png)
 
 ## Supported Databases
 
-The octopus package currently supports the following databases:
+The *octopus* package currently supports the following databases:
 
 -   Postgres
 
 -   MySQL
 
+-   SQLite
+
+-   DuckDB
+
+-   Snowflake
+
+-   Teradata
+
+-   Vertica DB
+
+Don't see the database that you use? I would be glad to add it. Just reach out to me and we can work together to create compatibility for a new connection type.
+
 ## Installation
 
-You can install the development version from github.
+*octopus* is officially on CRAN! You can install it in the usual way.
+
+``` r
+install.packages("octopus")
+```
+
+Or the development version from github.
 
 ``` r
 devtools::install_github("MCodrescu/octopus")
@@ -54,8 +70,7 @@ con <-
     RPostgres::Postgres(),
     host = "localhost",
     user = "postgres",
-    password = keyring::key_get("DBPassword"),
-    port = 5432
+    password = keyring::key_get("DBPassword")
   )
 
 # View the Database
