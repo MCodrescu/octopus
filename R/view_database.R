@@ -50,170 +50,120 @@
 view_database <-
   function(con, options = list()){
     ui <- shiny::bootstrapPage(
-      theme = bslib::bs_theme(version = 5),
+      theme = bslib::bs_theme(
+        version = 5,
+        secondary = "#D0EFF3",
+        base_font = bslib::font_google("Prompt")
+      ),
 
       # Initiate shinyjs
       shinyjs::useShinyjs(),
 
-      # Navbar -----------------------------------------------------------------
 
-      shiny::tags$div(
-        class = "container-fluid pt-2",
-        shiny::tags$nav(
-          class = "navbar navbar-expand-sm navbar-light bg-light border rounded shadow-sm",
-          shiny::div(
-            class = "container-fluid",
-            shiny::tags$a(
-              class = "navbar-brand mb-1",
-              "Octopus"
-            ),
-            shiny::tags$button(
-              class = "navbar-toggler",
-              type = "button",
-              "data-bs-toggle" = "collapse",
-              "data-bs-target" = "#navbarSupportedContent",
-              shiny::tags$span(class = "navbar-toggler-icon")
-            ),
-            shiny::div(
-              class = "collapse navbar-collapse",
-              id = "navbarSupportedContent",
-              shiny::tags$ul(
-                class = "navbar-nav me-auto mb-2 mb-sm-0",
-                shiny::tags$li(
-                  class = "nav-item",
-                  shiny::tags$a(
-                    class = "nav-link",
-                    id = "viewNav",
-                    role = "button",
-                    "data-bs-toggle" = "dropdown",
-                    "Manage"
-                  ),
-                ),
-                shiny::tags$li(
-                  class = "nav-item",
-                  shiny::tags$a(
-                    class = "nav-link",
-                    id = "queryNav",
-                    role = "button",
-                    "data-bs-toggle" = "dropdown",
-                    "Query"
-                  )
-                ),
-
-
-                # Run Query Button
-                shiny::tags$li(
-                  class = "nav-item",
-                  id = "submitQuery",
-                  style = "display: none;",
-                  title = "Run Query",
-                  shiny::tags$a(
-                    class = "nav-link",
-                    role = "button",
-                    shiny::icon(
-                      name = "play"
-                    )
-                  )
-                ),
-                # Format Query Button
-                shiny::tags$li(
-                  class = "nav-item",
-                  id = "formatQuery",
-                  style = "display: none;",
-                  title = "Format Query",
-                  shiny::tags$a(
-                    class = "nav-link",
-                    role = "button",
-                    shiny::icon(
-                      name = "indent"
-                    )
-                  )
-                ),
-
-                # Selected Schema
-                shiny::tags$li(
-                  class = "nav-item",
-                  id = "selectedSchema",
-                  style = "display: none;",
-                  shiny::tags$a(
-                    class = "nav-link",
-                    id = "selectedSchemaContent",
-                    role = "button"
-                  )
-                )
-
-              )
-            )
-          )
-        )
-      ),
-
-      # Main container----------------------------------------------------------
+      # User Interface----------------------------------------------------------
 
       shiny::div(
-        class = "container py-3",
+        class = "container py-5",
+
         shiny::div(
-          class = "row justify-content-center",
+          class = "row mx-0 px-0 justify-content-center",
           shiny::div(
-            class = "col-10 col-md-9 col-lg-6 bg-light py-3 px-5 border rounded shadow",
+            class = "col-10 col-md-9 col-lg-3 me-3",
             id = "viewDiv",
 
-            # Header
-            shiny::tags$h3(class = "text-center", "Manage Database"),
-
-            # Select schema
-            shiny::selectInput(
-              "schema",
-              "Schemas",
-              choices = c("Loading..."),
-              width = "100%"
-            ),
-
-            # Select table
-            shiny::selectInput(
-              "tables",
-              "Tables",
-              choices = c("Loading..."),
-              width = "100%"
-            ),
+            ## Manage UI -------------------------------------------------------
 
             shiny::div(
-              class = "row justify-content-between py-3",
+              class = "row bg-light py-3 mb-3 px-3 border rounded shadow",
 
-              # View Table
+              # Header
+              shiny::tags$h3(
+                class = "text-center pb-3",
+                "Manage"
+              ),
+
+              shiny::hr(),
+
+              # Select schema
+              shiny::selectInput(
+                "schema",
+                label = shiny::strong("Schema"),
+                choices = c("Loading..."),
+                width = "100%"
+              ),
+
+              # Select table
+              shiny::selectInput(
+                "tables",
+                label = shiny::strong("Table"),
+                choices = c("Loading..."),
+                width = "100%"
+              ),
+
               shiny::div(
-                class = "col-6",
-                shiny::tags$button(
-                  id = "viewTable",
-                  class = "btn btn-outline-primary w-100",
-                  "View Table"
+                class = "btn-group mt-2 mb-4 w-100",
+
+                # View Tables
+                shiny::actionButton(
+                  inputId = "viewTable",
+                  icon = shiny::icon("expand"),
+                  "View"
+                ),
+
+                # Delete Tables
+                shiny::actionButton(
+                  inputId = "deleteTable",
+                  icon = shiny::icon("trash"),
+                  "Delete"
                 )
               ),
 
-              # Delete Table
-              shiny::div(
-                class = "col-6",
-                shiny::tags$button(
-                  id = "deleteTable",
-                  class = "btn btn-outline-danger w-100",
-                  "Drop Table"
-                )
+              # File upload to database
+              shiny::fileInput(
+                "newTableUpload",
+                label = shiny::strong("Upload File"),
+                accept = c(".csv", ".xlsx"),
+                width = "100%"
               )
             ),
 
-            # File upload to database
-            shiny::fileInput(
-              "newTableUpload",
-              "Upload File",
-              accept = c(".csv", ".xlsx"),
-              width = "100%"
+            ## Query UI --------------------------------------------------------
+
+            shiny::div(
+              class = "row bg-light py-3 mt-3 px-3 border rounded shadow",
+
+              # Header
+              shiny::tags$h3(
+                class = "text-center pb-3",
+                "Query"
+              ),
+
+              shiny::hr(),
+
+              shiny::div(
+                class = "btn-group mt-3 mb-4 w-100",
+
+                # Run Query
+                shiny::actionButton(
+                  inputId = "submitQuery",
+                  icon = shiny::icon("play"),
+                  "Run"
+                ),
+
+                # Format Query
+                shiny::actionButton(
+                  inputId = "formatQuery",
+                  icon = shiny::icon("indent"),
+                  "Format"
+                )
+              )
             ),
 
           ),
           shiny::div(
-            class = "col-12 col-lg-10 bg-light pb-2 pt-1 border rounded shadow",
+            class = "col-12 col-lg-7 bg-light pb-2 pt-1 mt-3 mt-lg-0 border rounded shadow",
             id = "queryDiv",
-            style = "display: none; height: 80vh;",
+            style = "height: 80vh;",
 
             shiny::div(
               class = "row h-100 pt-1",
@@ -237,30 +187,6 @@ view_database <-
     )
 
     server <- function(input, output, session) {
-
-      # Navigation -------------------------------------------------------------
-      shinyjs::onclick("viewNav", {
-        shinyjs::hideElement("queryDiv")
-        shinyjs::hideElement("submitQuery")
-        shinyjs::hideElement("formatQuery")
-        shinyjs::hideElement("selectedSchema")
-        shinyjs::showElement("viewDiv")
-      })
-
-      shinyjs::onclick("queryNav", {
-        shinyjs::hideElement("viewDiv")
-        shinyjs::showElement("queryDiv")
-        shinyjs::showElement("submitQuery")
-        shinyjs::showElement("formatQuery")
-        shinyjs::showElement("selectedSchema")
-        shinyjs::html(
-          "selectedSchemaContent",
-          glue::glue(
-            "Current Schema: {input$schema}"
-          )
-        )
-      })
-
 
       # Database Functions -----------------------------------------------------
       driver <- class(con)
@@ -303,6 +229,7 @@ view_database <-
         get_preview <- get_preview_sqlite
         delete_table <- delete_table_sqlite
         write_table <- write_table_sqlite
+
       }
 
       # Initialize Inputs -----------------------------------------------
@@ -728,14 +655,6 @@ view_database <-
             shiny::showNotification(error$message)
           }
         )
-      })
-
-
-      # Closing ----------------------------------------------------------------
-
-      # Disconnect from DB
-      session$onSessionEnded(function() {
-        shiny::stopApp()
       })
 
     }
