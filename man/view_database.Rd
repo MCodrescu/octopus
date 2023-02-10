@@ -18,18 +18,3 @@ An R Shiny instance.
 This function opens a shiny instance where the database can
   be viewed.
 }
-\examples{
-con <- DBI::dbConnect(
-  RSQLite::SQLite(),
-  ":memory:"
-)
-
-DBI::dbWriteTable(
-  con,
-  name = "mtcars",
-  value = mtcars
-)
-
-octopus::view_database(con)
-
-}
