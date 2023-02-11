@@ -52,7 +52,6 @@ view_database <-
     ui <- shiny::bootstrapPage(
       theme = bslib::bs_theme(
         version = 5,
-        secondary = "#D0EFF3",
         base_font = bslib::font_google("Prompt")
       ),
 

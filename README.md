@@ -10,11 +10,11 @@ The *octopus* package is an SQL editor built entirely in R. You can
 preview tables, upload files, send queries, and more.
 
 All database credentials are handled by the R user. Simply pass a
-supported database connection object created with DBI::dbConnect() to
-the function octopus::view_database() and *octopus* will start a shiny
+supported database connection object created with `DBI::dbConnect()` to
+the function `octopus::view_database()` and *octopus* will start a shiny
 application allowing you to interact with the database.
 
-![Octopus User Interface](images/octopusMainPage1.png)
+![Octopus Main Page](images/octopusMainPage2.png)
 
 ## Supported Databases
 
@@ -40,13 +40,7 @@ new connection type.
 
 ## Installation
 
-*octopus* is officially on CRAN! You can install it in the usual way.
-
-``` r
-install.packages("octopus")
-```
-
-Or the development version from github.
+Install the development version from github.
 
 ``` r
 devtools::install_github("MCodrescu/octopus")
