@@ -101,7 +101,7 @@ view_database <-
               ),
 
               shiny::div(
-                class = "btn-group mt-2 mb-4 w-100",
+                class = "btn-group mt-2 mb-5 w-100",
 
                 # View Tables
                 shiny::actionButton(
@@ -124,7 +124,10 @@ view_database <-
                 label = shiny::strong("Upload File"),
                 accept = c(".csv", ".xlsx"),
                 width = "100%"
-              )
+              ),
+
+              shiny::div(class = "pt-4"),
+
             ),
 
             ## Query UI --------------------------------------------------------
