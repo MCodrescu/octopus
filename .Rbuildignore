@@ -3,6 +3,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
-^tests/testthat\.R$
 ^README\.Rmd$
 ^images
