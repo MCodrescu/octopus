@@ -8,16 +8,21 @@
 #'
 #' @return A character vector of all schemas in the database.
 get_schemas_snowflake <- function(con) {
-  schemas <-
-    DBI::dbGetQuery(
-      con,
-      "
-      SELECT schema_name
-      FROM information_schema.schemata
-      ORDER BY schema_name;
-      "
-    ) |>
-    dplyr::pull(1)
+  tryCatch({
+    schemas <-
+      DBI::dbGetQuery(
+        con,
+        "
+        SELECT schema_name
+        FROM information_schema.schemata
+        ORDER BY schema_name;
+        "
+      ) |>
+      dplyr::pull(1)
+  }, error = function(error){
+    error$message
+  })
+
 }
 
 #' A Database Specific Function to Retrieve All Database Tables
@@ -144,6 +149,7 @@ get_preview_snowflake <- function(con, schema, table) {
 #' @param table A string containing the table name.
 #'
 #' @importFrom DBI dbSendQuery
+#' @importFrom DBI dbClearResult
 #' @importFrom glue glue
 #'
 #' @return A result string. Either "Success" or an error message.
@@ -151,12 +157,13 @@ delete_table_snowflake <- function(con, schema, table){
 
   result <-
     tryCatch({
-      DBI::dbSendQuery(
+      res <- DBI::dbSendQuery(
         con,
         glue::glue(
           "DROP TABLE \"{schema}\".\"{table}\""
         )
       )
+      DBI::dbClearResult(res)
       result <- "Success"
     }, error = function(error){
       result <- error$message
@@ -175,7 +182,8 @@ delete_table_snowflake <- function(con, schema, table){
 #' @param temporary A logical value. Should the table be temporary?
 #'
 #' @importFrom DBI dbWriteTable
-#' @importFrom DBI Id
+#' @importFrom DBI dbSendQuery
+#' @importFrom DBI dbClearResult
 #'
 #' @return A result string. Either "Success" or an error message.
 write_table_snowflake <-
@@ -187,14 +195,19 @@ write_table_snowflake <-
     temporary = FALSE
   ){
 
+    DBI::dbSendQuery(
+      con,
+      glue::glue(
+        "USE SCHEMA {schema}"
+      )
+    ) |>
+      DBI::dbClearResult()
+
     result <-
       tryCatch({
         DBI::dbWriteTable(
           con,
-          name = DBI::Id(
-            table = table_name,
-            schema = schema
-          ),
+          name = table_name,
           value = data.frame(data),
           overwrite = TRUE,
           temporary = temporary
