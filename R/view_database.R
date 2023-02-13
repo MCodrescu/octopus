@@ -194,7 +194,7 @@ view_database <-
       driver <- class(con)
 
       if (driver == "PqConnection"){
-        schemas <- get_schemas_postgres(con)
+        get_schemas <- get_schemas_postgres
         get_tables <- get_tables_postgres
         get_n_rows <- get_n_rows_postgres
         get_preview <- get_preview_postgres
@@ -202,7 +202,7 @@ view_database <-
         write_table <- write_table_postgres
 
       } else if (driver == "Snowflake"){
-        schemas <- get_schemas_snowflake(con)
+        get_schemas <- get_schemas_snowflake
         get_tables <- get_tables_snowflake
         get_n_rows <- get_n_rows_snowflake
         get_preview <- get_preview_snowflake
@@ -217,7 +217,7 @@ view_database <-
         # TODO
 
       } else if (driver == "MySQLConnection"){
-        schemas <- get_schemas_mysql(con)
+        get_schemas <- get_schemas_mysql
         get_tables <- get_tables_mysql
         get_n_rows <- get_n_rows_mysql
         get_preview <- get_preview_mysql
@@ -225,7 +225,7 @@ view_database <-
         write_table <- write_table_mysql
 
       } else if (driver == "SQLiteConnection"){
-        schemas <- get_schemas_sqlite(con)
+        get_schemas <- get_schemas_sqlite
         get_tables <- get_tables_sqlite
         get_n_rows <- get_n_rows_sqlite
         get_preview <- get_preview_sqlite
@@ -235,6 +235,9 @@ view_database <-
       }
 
       # Initialize Inputs -----------------------------------------------
+
+      tryCatch({
+        schemas <- get_schemas(con)
 
         # Update schema list
         shiny::updateSelectizeInput(
@@ -266,6 +269,9 @@ view_database <-
             server = TRUE
           )
         })
+      }, error = function(error){
+        shiny::showNotification(error$message)
+      })
 
 
       # View Table ------------------------------------------------------------
@@ -310,7 +316,9 @@ view_database <-
 
       # Allow deleting a table
       shinyjs::onclick("deleteTable", {
+
         table <- input$tables
+
         shiny::showModal(
           shiny::modalDialog(
             easyClose = TRUE,
@@ -328,24 +336,29 @@ view_database <-
         shinyjs::onclick("confirmDelete", asis = TRUE, {
           shiny::removeModal()
 
-          result <- delete_table(
-            con,
-            input$schema,
-            input$tables
-          )
+          tryCatch({
+            result <- delete_table(
+              con,
+              input$schema,
+              input$tables
+            )
 
-          # Notify success
-          shiny::showNotification(result)
+            # Notify success
+            shiny::showNotification(result)
 
-          # Update select input
-          current_tables <- get_tables(con, input$schema)
-          shiny::updateSelectizeInput(
-            session,
-            "tables",
-            choices = current_tables,
-            selected = current_tables[1],
-            server = TRUE
-          )
+            # Update select input
+            current_tables <- get_tables(con, input$schema)
+            shiny::updateSelectizeInput(
+              session,
+              "tables",
+              choices = current_tables,
+              selected = current_tables[1],
+              server = TRUE
+            )
+
+          }, error = function(error){
+            shiny::showNotification(error$message)
+          })
 
         })
       })
@@ -374,7 +387,7 @@ view_database <-
               shiny::textInput(
                 "newTableName",
                 "Confirm Table Name",
-                value = gsub(".csv", "", file$name)
+                value = gsub("\\..+", "", file$name)
               ),
               shiny::selectInput(
                 "cleanColumnNames",
@@ -406,31 +419,37 @@ view_database <-
               janitor::clean_names(new_table)
           }
 
-          # Write data frame to DB
-          result <- write_table(
-            con,
-            schema = input$schema,
-            table_name = input$newTableName,
-            data = new_table,
-            temporary = ifelse(
-              input$tempTable == "Yes",
-              TRUE,
-              FALSE
+          tryCatch({
+            # Write data frame to DB
+            result <- write_table(
+              con,
+              schema = input$schema,
+              table_name = input$newTableName,
+              data = new_table,
+              temporary = ifelse(
+                input$tempTable == "Yes",
+                TRUE,
+                FALSE
+              )
             )
-          )
 
-          # Show result
-          shiny::showNotification(result, duration = 3)
+            # Show result
+            shiny::showNotification(result, duration = 3)
 
-          # Update select input
-          current_tables <- get_tables(con, input$schema)
-          shiny::updateSelectizeInput(
-            session,
-            "tables",
-            choices = current_tables,
-            selected = current_tables[1],
-            server = TRUE
-          )
+            # Update select input
+            current_tables <- get_tables(con, input$schema)
+            shiny::updateSelectizeInput(
+              session,
+              "tables",
+              choices = current_tables,
+              selected = current_tables[1],
+              server = TRUE
+            )
+
+          }, error = function(error){
+            shiny::showNotification(error$message)
+          })
+
         })
       })
 
