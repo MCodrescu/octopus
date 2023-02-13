@@ -478,6 +478,18 @@ view_database <-
               n_rows = n_rows
             )
 
+            output$downloadQuery <-
+              shiny::downloadHandler(
+                filename = function(){
+                  glue::glue(
+                    "query_{format(Sys.Date(), \"%Y%m%d%H%M%S\")}.csv"
+                  )
+                },
+                content = function(file) {
+                  write.csv(result, file, row.names = FALSE)
+                }
+              )
+
             # Show query result
             shiny::showModal(
               shiny::modalDialog(
@@ -500,48 +512,14 @@ view_database <-
                   )
                 ),
                 footer = shiny::tagList(
-                  shiny::tags$button(
-                    class = "btn btn-outline-secondary",
-                    id = "downloadQuery",
-                    style = "display: none;",
+                  shiny::downloadButton(
+                    "downloadQuery",
                     "Download"
                   ),
                   shiny::modalButton("Dismiss")
                 )
               )
             )
-
-            # Don't allow downloading if query result too big
-            if (n_rows < 50000 & n_rows != 0) {
-              shinyjs::showElement("downloadQuery")
-            } else {
-              shinyjs::hideElement("downloadQuery")
-            }
-
-            # TODO: Change download to use R Shiny mechanism instead
-            # Download the query result
-            shinyjs::onclick("downloadQuery", {
-              result <- tryCatch(
-                {
-                  # Get query and write to csv
-                  readr::write_csv(
-                    DBI::dbGetQuery(con, input$query),
-                    glue::glue(
-                      "{Sys.getenv(\"USERPROFILE\")}\\Downloads\\query_result_{format(Sys.time(), \"%Y-%m-%d-%H%M%S\")}.csv"
-                    )
-                  )
-                  result <-
-                    glue::glue(
-                      "Downloaded Successfully to {Sys.getenv(\"USERPROFILE\")}\\Downloads"
-                    )
-                },
-                error = function(error) {
-                  result <- error$message
-                }
-              )
-
-              shiny::showNotification(result)
-            })
 
             # Update select input
             current_tables <- get_tables(con, input$schema)
