@@ -3,11 +3,12 @@
 #'
 #' @param id The namespace Id
 #' @param title The title to be displayed in the modal.
+#' @param download_title The title on the download button.
 #' @param n_rows The number of rows of the result.
 #' @param result The data frame to display in the modal.
 #'
 #' @return A shiny tagList
-table_modal_w_download_UI <- function(id, title, n_rows, result) {
+table_modal_w_download_UI <- function(id, title, download_title, n_rows, result) {
   ns <- NS(id)
   tagList(
     shiny::showModal(
@@ -33,7 +34,7 @@ table_modal_w_download_UI <- function(id, title, n_rows, result) {
         footer = shiny::tagList(
           shiny::downloadButton(
             ns("downloadQuery"),
-            "Download"
+            glue::glue("{download_title}")
           ),
           shiny::modalButton("Dismiss")
         )

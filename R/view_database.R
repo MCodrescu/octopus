@@ -302,6 +302,7 @@ view_database <-
           table_modal_w_download_UI(
             id = "preview",
             title = "Preview Table",
+            download_title = "Download Preview",
             n_rows = n_rows,
             result = result
           )
@@ -481,6 +482,7 @@ view_database <-
             table_modal_w_download_UI(
               id = "query",
               title = "Query Preview",
+              download_title = "Download",
               n_rows = n_rows,
               result = result
             )
