@@ -282,53 +282,22 @@ view_database <-
             input$tables
           )
 
-          output$downloadPreview <-
-            shiny::downloadHandler(
-              filename = function(){
-                glue::glue(
-                  "preview_{format(Sys.time(), \"%Y%m%d%H%M%S\")}.csv"
-                )
-              },
-              content = function(file) {
-                write.csv(result, file, row.names = FALSE)
-              }
-            )
+          result <- get_preview(
+            con,
+            input$schema,
+            input$tables
+          )
 
-          # Show the modal
-          shiny::showModal(
-            shiny::modalDialog(
-              easyClose = TRUE,
-              size = "xl",
-              shiny::h3(
-                glue::glue("Preview {input$tables} in {input$schema}")
-              ),
-              shiny::p(
-                glue::glue("{n_rows} rows")
-              ),
-              shiny::div(
-                class = "table-responsive",
-                style = "max-height: 70vh;",
-                DT::renderDataTable(
-                  options = list(dom = "t", paging = FALSE, ordering = FALSE),
-                  server = TRUE,
-                  rownames = FALSE,
-                  {
-                    get_preview(
-                      con,
-                      input$schema,
-                      input$tables
-                    )
-                  }
-                )
-              ),
-              footer = shiny::tagList(
-                shiny::downloadButton(
-                  "downloadPreview",
-                  "Download"
-                ),
-                shiny::modalButton("Dismiss")
-              )
-            )
+          table_modal_w_download_Server(
+            id = "preview",
+            result = result
+          )
+
+          table_modal_w_download_UI(
+            id = "preview",
+            title = "Preview Table",
+            n_rows = n_rows,
+            result = result
           )
 
         }, error = function(error){
@@ -485,47 +454,16 @@ view_database <-
               n_rows = n_rows
             )
 
-            output$downloadQuery <-
-              shiny::downloadHandler(
-                filename = function(){
-                  glue::glue(
-                    "query_{format(Sys.time(), \"%Y%m%d%H%M%S\")}.csv"
-                  )
-                },
-                content = function(file) {
-                  write.csv(result, file, row.names = FALSE)
-                }
-              )
+            table_modal_w_download_Server(
+              id = "query",
+              result = result
+            )
 
-            # Show query result
-            shiny::showModal(
-              shiny::modalDialog(
-                easyClose = TRUE,
-                size = "xl",
-                shiny::h3("Query Preview"),
-                shiny::p(
-                  glue::glue("{n_rows} rows")
-                ),
-                shiny::div(
-                  class = "table-responsive",
-                  style = "max-height: 70vh;",
-                  DT::renderDataTable(
-                    options = list(dom = "t", paging = FALSE),
-                    server = TRUE,
-                    rownames = FALSE,
-                    {
-                      result
-                    }
-                  )
-                ),
-                footer = shiny::tagList(
-                  shiny::downloadButton(
-                    "downloadQuery",
-                    "Download"
-                  ),
-                  shiny::modalButton("Dismiss")
-                )
-              )
+            table_modal_w_download_UI(
+              id = "query",
+              title = "Query Preview",
+              n_rows = n_rows,
+              result = result
             )
 
             # Update select input
