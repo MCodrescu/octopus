@@ -12,6 +12,7 @@ LazyData: true
 Suggests: 
     keyring,
     odbc,
+    readr,
     RMySQL,
     RPostgres,
     RSQLite,
@@ -25,9 +26,9 @@ Imports:
     glue,
     httr,
     janitor,
-    readr,
     rio,
     shiny,
     shinyAce,
-    shinyjs
+    shinyjs,
+    utils
 RoxygenNote: 7.2.1

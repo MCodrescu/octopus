@@ -1,6 +1,17 @@
 #' Table Modal with Download UI
 #' @noRd
 #'
+#' @importFrom shiny NS
+#' @importFrom shiny tagList
+#' @importFrom shiny modalDialog
+#' @importFrom shiny h3
+#' @importFrom shiny p
+#' @importFrom shiny div
+#' @importFrom shiny downloadButton
+#' @importFrom shiny modalButton
+#' @importFrom glue glue
+#' @importFrom DT renderDataTable
+#'
 #' @param id The namespace Id
 #' @param title The title to be displayed in the modal.
 #' @param download_title The title on the download button.
@@ -9,8 +20,8 @@
 #'
 #' @return A shiny tagList
 table_modal_w_download_UI <- function(id, title, download_title, n_rows, result) {
-  ns <- NS(id)
-  tagList(
+  ns <- shiny::NS(id)
+  shiny::tagList(
     shiny::showModal(
       shiny::modalDialog(
         easyClose = TRUE,
@@ -46,12 +57,17 @@ table_modal_w_download_UI <- function(id, title, download_title, n_rows, result)
 #' Table Modal with Download Server
 #' @noRd
 #'
+#' @importFrom shiny moduleServer
+#' @importFrom shiny downloadHandler
+#' @importFrom glue glue
+#' @importFrom utils write.csv
+#'
 #' @param id A namespace id.
 #' @param result A data frame to open for downloading.
 #'
 #' @return A model server.
 table_modal_w_download_Server <- function(id, result) {
-  moduleServer(
+  shiny::moduleServer(
     id,
     function(input, output, session) {
       output$downloadQuery <-
@@ -62,7 +78,7 @@ table_modal_w_download_Server <- function(id, result) {
             )
           },
           content = function(file) {
-            write.csv(result, file, row.names = FALSE)
+            utils::write.csv(result, file, row.names = FALSE)
           }
         )
     }

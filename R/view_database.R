@@ -42,6 +42,7 @@
 #' @importFrom httr use_proxy
 #' @importFrom httr content
 #' @importFrom bslib bs_theme
+#' @importFrom utils write.csv
 #'
 #'
 #' @return An R Shiny instance.
@@ -193,46 +194,19 @@ view_database <-
       # Database Functions -----------------------------------------------------
       driver <- class(con)
 
-      if (driver == "PqConnection"){
-        get_schemas <- get_schemas_postgres
-        get_tables <- get_tables_postgres
-        get_n_rows <- get_n_rows_postgres
-        get_preview <- get_preview_postgres
-        delete_table <- delete_table_postgres
-        write_table <- write_table_postgres
+      tryCatch({
+        database_functions <- get_database_functions(driver)
+        get_schemas <- database_functions[[1]]
+        get_tables <- database_functions[[2]]
+        get_n_rows <- database_functions[[3]]
+        get_preview <- database_functions[[4]]
+        delete_table <- database_functions[[5]]
+        write_table <- database_functions[[6]]
 
-      } else if (driver == "Snowflake"){
-        get_schemas <- get_schemas_snowflake
-        get_tables <- get_tables_snowflake
-        get_n_rows <- get_n_rows_snowflake
-        get_preview <- get_preview_snowflake
-        delete_table <- delete_table_snowflake
-        write_table <- write_table_snowflake
+      }, error = function(error){
+        shiny::showNotification(error$message)
+      })
 
-
-      } else if (driver == "Vertica Database"){
-        # TODO
-
-      } else if (driver == "Teradata"){
-        # TODO
-
-      } else if (driver == "MySQLConnection"){
-        get_schemas <- get_schemas_mysql
-        get_tables <- get_tables_mysql
-        get_n_rows <- get_n_rows_mysql
-        get_preview <- get_preview_mysql
-        delete_table <- delete_table_mysql
-        write_table <- write_table_mysql
-
-      } else if (driver == "SQLiteConnection"){
-        get_schemas <- get_schemas_sqlite
-        get_tables <- get_tables_sqlite
-        get_n_rows <- get_n_rows_sqlite
-        get_preview <- get_preview_sqlite
-        delete_table <- delete_table_sqlite
-        write_table <- write_table_sqlite
-
-      }
 
       # Initialize Inputs -----------------------------------------------
 
