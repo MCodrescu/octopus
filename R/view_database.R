@@ -463,168 +463,101 @@ view_database <-
       # Allow submitting queries
       shinyjs::onclick("submitQuery", {
 
-        # Get the query
-        query <- input$query
+          tryCatch({
 
-        # Get the number of rows
-        n_rows <- get_n_rows(
-          con,
-          schema = input$schema,
-          table = input$tables,
-          query = query
-        )
-
-        # Catch query errors
-        if (query == ""){
-          shiny::showNotification(
-            "Please input a query"
-          )
-        } else if(n_rows > 50000){
-          shiny::showNotification(
-            "Your query returned a result too large.
-              Please narrow down the result."
-          )
-        } else {
-
-          # Set search path
-          if (driver %in% c("PqConnection", "Vertica Database")){
-            DBI::dbSendQuery(
-              con,
-              glue::glue(
-                "SET search_path TO public, {input$schema}"
-              )
-            )
-          } else if (driver == "Snowflake"){
-            DBI::dbSendQuery(
-              con,
-              glue::glue(
-                "USE SCHEMA {input$schema}"
-              )
-            )
-          }
-
-          # Check if it is a select statement
-          if (grepl("SELECT|Select|select", query) & !grepl("CREATE", query)) {
-            result <- tryCatch(
-              {
-
-                # Get the result
-                DBI::dbGetQuery(con, query)
-
-              },
-              error = function(error) {
-                result <- data.frame(result = error$message)
-              }
+            n_rows <- get_n_rows(
+              con = con,
+              schema = input$schema,
+              table = input$tables,
+              query = input$query
             )
 
-          } else {
-            result <- tryCatch(
-              {
-
-                # Send the query
-                DBI::dbSendQuery(con, query)
-                result <- data.frame(result = "Success")
-
-              },
-              error = function(error) {
-                result <- data.frame(result = error$message)
-              }
+            result <- submit_query(
+              query = input$query,
+              con = con,
+              n_rows = n_rows
             )
-          }
 
-          # Show query result
-          shiny::showModal(
-            shiny::modalDialog(
-              easyClose = TRUE,
-              size = "xl",
-              shiny::h3("Query Preview"),
-              shiny::p(
-                glue::glue("{n_rows} rows")
-              ),
-              shiny::div(
-                class = "table-responsive",
-                style = "max-height: 70vh;",
-                DT::renderDataTable(
-                  options = list(dom = "t", paging = FALSE),
-                  server = TRUE,
-                  rownames = FALSE,
-                  {
-                    result
-                  }
-                )
-              ),
-              footer = shiny::tagList(
-                shiny::tags$button(
-                  class = "btn btn-outline-secondary",
-                  id = "downloadQuery",
-                  style = "display: none;",
-                  "Download"
+            # Show query result
+            shiny::showModal(
+              shiny::modalDialog(
+                easyClose = TRUE,
+                size = "xl",
+                shiny::h3("Query Preview"),
+                shiny::p(
+                  glue::glue("{n_rows} rows")
                 ),
-                shiny::modalButton("Dismiss")
+                shiny::div(
+                  class = "table-responsive",
+                  style = "max-height: 70vh;",
+                  DT::renderDataTable(
+                    options = list(dom = "t", paging = FALSE),
+                    server = TRUE,
+                    rownames = FALSE,
+                    {
+                      result
+                    }
+                  )
+                ),
+                footer = shiny::tagList(
+                  shiny::tags$button(
+                    class = "btn btn-outline-secondary",
+                    id = "downloadQuery",
+                    style = "display: none;",
+                    "Download"
+                  ),
+                  shiny::modalButton("Dismiss")
+                )
               )
             )
-          )
 
-          # Don't allow downloading if query result too big
-          if (n_rows < 50000 & n_rows != 0) {
-            shinyjs::showElement("downloadQuery")
-          } else {
-            shinyjs::hideElement("downloadQuery")
-          }
+            # Don't allow downloading if query result too big
+            if (n_rows < 50000 & n_rows != 0) {
+              shinyjs::showElement("downloadQuery")
+            } else {
+              shinyjs::hideElement("downloadQuery")
+            }
 
-          # Download the query result
-          shinyjs::onclick("downloadQuery", {
-            result <- tryCatch(
-              {
-
-                # Set search path
-                if (driver %in% c("PqConnection", "Vertica Database")){
-                  DBI::dbSendQuery(
-                    con,
+            # TODO: Change download to use R Shiny mechanism instead
+            # Download the query result
+            shinyjs::onclick("downloadQuery", {
+              result <- tryCatch(
+                {
+                  # Get query and write to csv
+                  readr::write_csv(
+                    DBI::dbGetQuery(con, input$query),
                     glue::glue(
-                      "SET search_path TO public, {input$schema}"
+                      "{Sys.getenv(\"USERPROFILE\")}\\Downloads\\query_result_{format(Sys.time(), \"%Y-%m-%d-%H%M%S\")}.csv"
                     )
                   )
-                } else if (driver == "Snowflake"){
-                  DBI::dbSendQuery(
-                    con,
+                  result <-
                     glue::glue(
-                      "USE SCHEMA {input$schema}"
+                      "Downloaded Successfully to {Sys.getenv(\"USERPROFILE\")}\\Downloads"
                     )
-                  )
+                },
+                error = function(error) {
+                  result <- error$message
                 }
+              )
 
-                # Get query and write to csv
-                readr::write_csv(
-                  DBI::dbGetQuery(con, input$query),
-                  glue::glue(
-                    "{Sys.getenv(\"USERPROFILE\")}\\Downloads\\query_result_{format(Sys.time(), \"%Y-%m-%d-%H%M%S\")}.csv"
-                  )
-                )
-                result <-
-                  glue::glue(
-                    "Downloaded Successfully to {Sys.getenv(\"USERPROFILE\")}\\Downloads"
-                  )
-              },
-              error = function(error) {
-                result <- error$message
-              }
+              shiny::showNotification(result)
+            })
+
+            # Update select input
+            current_tables <- get_tables(con, input$schema)
+            shiny::updateSelectizeInput(
+              session,
+              "tables",
+              choices = current_tables,
+              selected = current_tables[1],
+              server = TRUE
             )
 
-            shiny::showNotification(result)
+          }, error = function(error){
+            shiny::showNotification(
+              error$message
+            )
           })
-
-          # Update select input
-          current_tables <- get_tables(con, input$schema)
-          shiny::updateSelectizeInput(
-            session,
-            "tables",
-            choices = current_tables,
-            selected = current_tables[1],
-            server = TRUE
-          )
-
-        }
 
       })
 
