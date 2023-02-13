@@ -273,60 +273,67 @@ view_database <-
       # View tables on click view button
       shinyjs::onclick("viewTable", {
 
+        tryCatch({
 
-        # Get the number of rows
-        n_rows <- tryCatch({
-          get_n_rows(
+          # Get the number of rows
+          n_rows <- get_n_rows(
             con,
             input$schema,
             input$tables
           )
+
+          output$downloadPreview <-
+            shiny::downloadHandler(
+              filename = function(){
+                glue::glue(
+                  "preview_{format(Sys.time(), \"%Y%m%d%H%M%S\")}.csv"
+                )
+              },
+              content = function(file) {
+                write.csv(result, file, row.names = FALSE)
+              }
+            )
+
+          # Show the modal
+          shiny::showModal(
+            shiny::modalDialog(
+              easyClose = TRUE,
+              size = "xl",
+              shiny::h3(
+                glue::glue("Preview {input$tables} in {input$schema}")
+              ),
+              shiny::p(
+                glue::glue("{n_rows} rows")
+              ),
+              shiny::div(
+                class = "table-responsive",
+                style = "max-height: 70vh;",
+                DT::renderDataTable(
+                  options = list(dom = "t", paging = FALSE, ordering = FALSE),
+                  server = TRUE,
+                  rownames = FALSE,
+                  {
+                    get_preview(
+                      con,
+                      input$schema,
+                      input$tables
+                    )
+                  }
+                )
+              ),
+              footer = shiny::tagList(
+                shiny::downloadButton(
+                  "downloadPreview",
+                  "Download"
+                ),
+                shiny::modalButton("Dismiss")
+              )
+            )
+          )
+
         }, error = function(error){
           shiny::showNotification(error$message)
         })
-
-
-        # Show the modal
-        shiny::showModal(
-          shiny::modalDialog(
-            easyClose = TRUE,
-            size = "xl",
-            shiny::h3(
-              glue::glue("Preview {input$tables} in {input$schema}")
-            ),
-            shiny::p(
-              glue::glue("{n_rows} rows")
-            ),
-            shiny::div(
-              class = "table-responsive",
-              style = "max-height: 70vh;",
-              DT::renderDataTable(
-                options = list(dom = "t", paging = FALSE, ordering = FALSE),
-                server = TRUE,
-                rownames = FALSE,
-                {
-                  result <- tryCatch({
-                    get_preview(con, input$schema, input$tables)
-                  }, error = function(error){
-                    data.frame(
-                      error = error$message
-                    )
-                  })
-                  result
-                }
-              )
-            ),
-            footer = shiny::tagList(
-              shiny::tags$button(
-                class = "btn btn-outline-secondary",
-                id = "downloadPreview",
-                style = "display: none;",
-                "Download"
-              ),
-              shiny::modalButton("Dismiss")
-            )
-          )
-        )
 
       })
 
@@ -482,7 +489,7 @@ view_database <-
               shiny::downloadHandler(
                 filename = function(){
                   glue::glue(
-                    "query_{format(Sys.Date(), \"%Y%m%d%H%M%S\")}.csv"
+                    "query_{format(Sys.time(), \"%Y%m%d%H%M%S\")}.csv"
                   )
                 },
                 content = function(file) {
