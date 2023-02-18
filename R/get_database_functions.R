@@ -33,10 +33,28 @@ get_database_functions <-
       )
 
     } else if (driver == "Vertica Database"){
-      # TODO
+      return (
+        list(
+          get_schemas_vertica,
+          get_tables_vertica,
+          get_n_rows_vertica,
+          get_preview_vertica,
+          delete_table_vertica,
+          write_table_vertica
+        )
+      )
 
-    } else if (driver == "Teradata"){
-      # TODO
+    } else if (driver == "duckdb_connection"){
+      return (
+        list(
+          get_schemas_duckdb,
+          get_tables_duckdb,
+          get_n_rows_duckdb,
+          get_preview_duckdb,
+          delete_table_duckdb,
+          write_table_duckdb
+        )
+      )
 
     } else if (driver == "MySQLConnection"){
       return (

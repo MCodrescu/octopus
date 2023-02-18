@@ -1,15 +1,17 @@
 Package: octopus
 Type: Package
-Title: Interactive Interface for Various Database Backends
+Title: An SQL Editor Built With R Shiny
 Version: 0.1.0
 Author: Marcus Codrescu
 Maintainer: Marcus Codrescu <m.codrescu@outlook.com>
-Description: Connect to various database backends including Postgres, Vertica, Snowflake, and more.
-    You can upload files, delete tables, download tables, preview tables, and send queries.
+Description: An SQL editor as a shiny application. Connect to various 
+    database backends including Postgres, MySQL, and Snowflake. Send queries,
+    upload tables, preview tables, and more. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Suggests: 
+    duckdb,
     keyring,
     odbc,
     readr,
