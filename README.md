@@ -30,8 +30,6 @@ The *octopus* package currently supports the following databases:
 
 - Snowflake
 
-- Teradata
-
 - Vertica DB
 
 Don’t see the database that you use? I would be glad to add it. Just
