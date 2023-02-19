@@ -12,7 +12,10 @@ docker_installed <-
     FALSE
   })
 
-if(docker_installed){
+odbc_dsn_setup <-
+  "Vertica_Test" %in% odbc::odbcListDataSources()$name
+
+if(docker_installed & odbc_dsn_setup){
   container_sha <-
     system(
       "docker run -d -p 5433:5433 -e APP_DB_USER=newdbadmin -e APP_DB_PASSWORD=vertica vertica/vertica-ce",

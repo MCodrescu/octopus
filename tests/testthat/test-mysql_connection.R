@@ -15,7 +15,7 @@ docker_installed <-
 if(docker_installed){
   container_sha <-
     system(
-      "docker run -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=example -p 3306:3306 -d mysql",
+      "docker run -e MYSQL_ROOT_PASSWORD=password -e MYSQL_USER=admin -e MYSQL_PASSWORD=password -e MYSQL_DATABASE=example -p 3306:3306 -d mysql",
       intern = TRUE
     )
 
@@ -24,7 +24,7 @@ if(docker_installed){
   con <-
     DBI::dbConnect(
       RMySQL::MySQL(),
-      host = "localhost",
+      host = "127.0.0.1",
       username = "root",
       password = "password",
       dbname = "example",
