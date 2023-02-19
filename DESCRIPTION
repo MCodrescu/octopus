@@ -1,6 +1,6 @@
 Package: octopus
 Type: Package
-Title: An SQL Editor Built With R Shiny
+Title: An SQL Editor Built with R Shiny
 Version: 0.1.0
 Author: Marcus Codrescu
 Maintainer: Marcus Codrescu <m.codrescu@outlook.com>
