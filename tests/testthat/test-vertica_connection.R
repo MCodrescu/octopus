@@ -1,26 +1,26 @@
 ### Docker is required to run these tests.
 ### Read more about docker at https://hub.docker.com/_/postgres
 
-docker_installed <-
+docker_working <-
   tryCatch({
-    system(
-      "docker --version",
-      intern = TRUE
-    )
+    container_sha <-
+      system(
+        "docker run -d -p 5433:5433 -e APP_DB_USER=newdbadmin -e APP_DB_PASSWORD=vertica vertica/vertica-ce",
+        intern = TRUE
+      )
     TRUE
   }, error = \(x){
     FALSE
   })
 
 odbc_dsn_setup <-
-  "Vertica_Test" %in% odbc::odbcListDataSources()$name
+  tryCatch({
+    "Vertica_Test" %in% odbc::odbcListDataSources()$name
+  }, error = function(error){
+    FALSE
+  })
 
-if(docker_installed & odbc_dsn_setup){
-  container_sha <-
-    system(
-      "docker run -d -p 5433:5433 -e APP_DB_USER=newdbadmin -e APP_DB_PASSWORD=vertica vertica/vertica-ce",
-      intern = TRUE
-    )
+if(docker_working & odbc_dsn_setup){
 
   Sys.sleep(120)
 

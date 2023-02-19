@@ -1,23 +1,19 @@
 ### Docker is required to run these tests.
 ### Read more about docker at https://hub.docker.com/_/mysql
 
-docker_installed <-
+docker_working <-
   tryCatch({
-    system(
-      "docker --version",
-      intern = TRUE
-    )
+    container_sha <-
+      system(
+        "docker run -e MYSQL_ROOT_PASSWORD=password -e MYSQL_USER=admin -e MYSQL_PASSWORD=password -e MYSQL_DATABASE=example -p 3306:3306 -d mysql",
+        intern = TRUE
+      )
     TRUE
   }, error = \(x){
     FALSE
   })
 
-if(docker_installed){
-  container_sha <-
-    system(
-      "docker run -e MYSQL_ROOT_PASSWORD=password -e MYSQL_USER=admin -e MYSQL_PASSWORD=password -e MYSQL_DATABASE=example -p 3306:3306 -d mysql",
-      intern = TRUE
-    )
+if(docker_working){
 
   Sys.sleep(20)
 

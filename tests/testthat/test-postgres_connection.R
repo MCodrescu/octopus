@@ -1,23 +1,19 @@
 ### Docker is required to run these tests.
 ### Read more about docker at https://hub.docker.com/_/postgres
 
-docker_installed <-
+docker_working <-
   tryCatch({
-    system(
-      "docker --version",
-      intern = TRUE
-    )
+    container_sha <-
+      system(
+        "docker run -e POSTGRES_PASSWORD=password -e POSTGRES_DB=example -p 5455:5432 -d postgres",
+        intern = TRUE
+      )
     TRUE
   }, error = \(x){
     FALSE
   })
 
-if(docker_installed){
-  container_sha <-
-    system(
-      "docker run -e POSTGRES_PASSWORD=password -e POSTGRES_DB=example -p 5455:5432 -d postgres",
-      intern = TRUE
-    )
+if(docker_working){
 
   Sys.sleep(3)
 
