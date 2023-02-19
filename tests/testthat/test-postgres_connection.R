@@ -8,24 +8,25 @@ docker_working <-
         "docker run -e POSTGRES_PASSWORD=password -e POSTGRES_DB=example -p 5455:5432 -d postgres",
         intern = TRUE
       )
+
+    Sys.sleep(3)
+
+    con <-
+      DBI::dbConnect(
+        RPostgres::Postgres(),
+        host = "localhost",
+        user = "postgres",
+        password = "password",
+        dbname = "example",
+        port = 5455
+      )
+
     TRUE
   }, error = \(x){
     FALSE
   })
 
 if(docker_working){
-
-  Sys.sleep(3)
-
-  con <-
-    DBI::dbConnect(
-      RPostgres::Postgres(),
-      host = "localhost",
-      user = "postgres",
-      password = "password",
-      dbname = "example",
-      port = 5455
-    )
 
   #-------------------------------------------------------------------------------
 

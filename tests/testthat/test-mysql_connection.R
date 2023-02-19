@@ -8,24 +8,25 @@ docker_working <-
         "docker run -e MYSQL_ROOT_PASSWORD=password -e MYSQL_USER=admin -e MYSQL_PASSWORD=password -e MYSQL_DATABASE=example -p 3306:3306 -d mysql",
         intern = TRUE
       )
+
+    Sys.sleep(20)
+
+    con <-
+      DBI::dbConnect(
+        RMySQL::MySQL(),
+        host = "127.0.0.1",
+        username = "root",
+        password = "password",
+        dbname = "example",
+        port = 3306
+      )
+
     TRUE
   }, error = \(x){
     FALSE
   })
 
 if(docker_working){
-
-  Sys.sleep(20)
-
-  con <-
-    DBI::dbConnect(
-      RMySQL::MySQL(),
-      host = "127.0.0.1",
-      username = "root",
-      password = "password",
-      dbname = "example",
-      port = 3306
-    )
 
   #-------------------------------------------------------------------------------
 
