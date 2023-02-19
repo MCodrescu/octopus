@@ -1,7 +1,14 @@
 ## A Snowflake database is required for these tests.
 ## You can get a free trial at https://signup.snowflake.com/
 
-if (keyring::key_get("SnowflakeTrialPassword") != ""){
+snowflake_key_set <-
+  tryCatch({
+    keyring::key_get("SnowflakeTrialPassword") != ""
+  }, error = function(error){
+    FALSE
+  })
+
+if (snowflake_key_set ){
 
   con <-
     DBI::dbConnect(
