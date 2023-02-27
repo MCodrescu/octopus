@@ -8,6 +8,7 @@
 [![R-CMD-check](https://github.com/MCodrescu/octopus/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MCodrescu/octopus/actions/workflows/R-CMD-check.yaml)
 
 <!-- badges: end -->
+<!-- change -->
 
 The *octopus* package is an SQL editor built entirely in R. You can
 preview tables, upload files, send queries, and more.

@@ -21,6 +21,8 @@ knitr::opts_chunk$set(
 
 <!-- badges: end -->
 
+<!-- change -->
+
 The *octopus* package is an SQL editor built entirely in R. You can preview tables, upload files, send queries, and more.
 
 All database credentials are handled by the R user. Simply pass a supported database connection object created with `DBI::dbConnect()` to the function `octopus::view_database()` and *octopus* will start a shiny application allowing you to interact with the database.
