@@ -63,12 +63,12 @@ view_database <-
       # User Interface----------------------------------------------------------
 
       shiny::div(
-        class = "container py-5",
+        class = "container pt-3",
 
         shiny::div(
           class = "row mx-0 px-0 justify-content-center",
           shiny::div(
-            class = "col-10 col-md-9 col-lg-3 me-3",
+            class = "col-12 col-md-5 col-lg-4 col-xl-3 mx-3",
             id = "viewDiv",
 
             ## Manage UI -------------------------------------------------------
@@ -78,7 +78,7 @@ view_database <-
 
               # Header
               shiny::tags$h3(
-                class = "text-center pb-3",
+                class = "text-center",
                 "Manage"
               ),
 
@@ -101,7 +101,7 @@ view_database <-
               ),
 
               shiny::div(
-                class = "btn-group mt-2 mb-5 w-100",
+                class = "btn-group mt-2 mb-4 w-100",
 
                 # View Tables
                 shiny::actionButton(
@@ -126,25 +126,23 @@ view_database <-
                 width = "100%"
               ),
 
-              shiny::div(class = "pt-4"),
-
             ),
 
             ## Query UI --------------------------------------------------------
 
             shiny::div(
-              class = "row bg-light py-3 mt-3 px-3 border rounded shadow",
+              class = "d-none d-md-block row bg-light py-3 mt-3 px-3 border rounded shadow",
 
               # Header
               shiny::tags$h3(
-                class = "text-center pb-3",
+                class = "text-center",
                 "Query"
               ),
 
               shiny::hr(),
 
               shiny::div(
-                class = "btn-group mt-3 mb-4 w-100",
+                class = "btn-group mt-3 mb-3 w-100",
 
                 # Run Query
                 shiny::actionButton(
@@ -164,9 +162,8 @@ view_database <-
 
           ),
           shiny::div(
-            class = "col-12 col-lg-7 bg-light pb-2 pt-1 mt-3 mt-lg-0 border rounded shadow",
+            class = "d-none d-md-block col-12 col-md-6 col-lg-7 bg-light pb-2 pt-1 mt-3 mt-md-0 border rounded shadow",
             id = "queryDiv",
-            style = "height: 80vh;",
 
             shiny::div(
               class = "row h-100 pt-1",
