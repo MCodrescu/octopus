@@ -1,12 +1,11 @@
 Package: octopus
 Type: Package
-Title: An SQL Editor Built with R Shiny
+Title: A Database Management Tool
 Version: 0.1.0
-Author: Marcus Codrescu
+Authors@R: person("Marcus", "Codrescu", , "m.codrescu@outlook.com", role = c("aut", "cre"))
 Maintainer: Marcus Codrescu <m.codrescu@outlook.com>
-Description: An SQL editor as a shiny application. Connect to various 
-    database backends including Postgres, MySQL, and Snowflake. Send queries,
-    upload tables, preview tables, and more. 
+Description: A database management tool built as a 'shiny' application. Connect to various 
+    database backends to send queries, upload files, preview tables, and more. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
