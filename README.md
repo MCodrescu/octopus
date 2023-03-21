@@ -21,7 +21,7 @@ application allowing you to interact with the database.
 *Try it out here!
 [shinyapps.io](https://zszxyy-marcus-codrescu.shinyapps.io/octopusconceptapp/)*
 
-![Octopus Main Page](images/octopusMainPage2.png)
+![octopus Interface](images/octopusMainPage3.png)
 
 ## Supported Databases
 
