@@ -116,6 +116,29 @@ if(docker_working){
   )
 
   test_that(
+    "a create table query works correcty",
+    {
+      n_rows = get_n_rows_postgres(
+        con = con,
+        schema = "",
+        table = "",
+        "CREATE TABLE mtcars_2 AS SELECT * FROM mtcars"
+      )
+
+      submit_query(
+        "CREATE TABLE mtcars_2 AS SELECT * FROM mtcars",
+        con = con,
+        n_rows = n_rows
+      )
+
+      expect_true(
+        "mtcars_2" %in% DBI::dbListTables(con)
+      )
+    }
+  )
+
+
+  test_that(
     "delete_table correctly drops the table",
     {
       expect_true(

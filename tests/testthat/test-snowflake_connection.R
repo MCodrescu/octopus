@@ -118,6 +118,34 @@ if (snowflake_key_set ){
   )
 
   test_that(
+    "a create table query works correcty",
+    {
+      n_rows = get_n_rows_snowflake(
+        con = con,
+        schema = "",
+        table = "",
+        "CREATE TABLE mtcars_2 AS SELECT * FROM mtcars"
+      )
+
+      submit_query(
+        "USE SCHEMA PUBLIC",
+        con = con,
+        n_rows = n_rows
+      )
+
+      submit_query(
+        "CREATE TABLE mtcars_2 AS SELECT * FROM mtcars",
+        con = con,
+        n_rows = n_rows
+      )
+
+      expect_true(
+        "MTCARS_2" %in% DBI::dbListTables(con)
+      )
+    }
+  )
+
+  test_that(
     "delete_table correctly drops the table",
     {
       expect_true(
@@ -133,8 +161,21 @@ if (snowflake_key_set ){
         )
       )
 
+      expect_equal(
+        "Success",
+        delete_table_snowflake(
+          con,
+          schema = "PUBLIC",
+          table = "MTCARS_2"
+        )
+      )
+
       expect_false(
         "MTCARS" %in% DBI::dbListTables(con)
+      )
+
+      expect_false(
+        "MTCARS_2" %in% DBI::dbListTables(con)
       )
 
     }

@@ -70,6 +70,9 @@ get_tables_mysql <- function(con, schema) {
 get_n_rows_mysql <- function(con, schema, table, query = "") {
 
   if (query != ""){
+    if (!grepl("^SELECT", trimws(query), ignore.case = TRUE)){
+      return(0)
+    }
     query_string <-
       glue::glue(
         "

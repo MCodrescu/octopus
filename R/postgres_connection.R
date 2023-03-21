@@ -70,6 +70,11 @@ get_tables_postgres <- function(con, schema) {
 get_n_rows_postgres <- function(con, schema, table, query = "") {
 
   if (query != ""){
+
+    if (!grepl("^SELECT", trimws(query), ignore.case = TRUE)){
+      return(0)
+    }
+
     query_string <-
       glue::glue(
         "
@@ -80,6 +85,7 @@ get_n_rows_postgres <- function(con, schema, table, query = "") {
         "
       )
   } else {
+
     query_string <-
       glue::glue(
         "
