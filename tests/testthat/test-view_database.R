@@ -7,8 +7,11 @@
 # Check that creating a new table works
 # Check that removing that new table works
 # Check that a simple SELECT * FROM mtcars query works
+# Check that CREATE and ALTER queries work
 # Check that formatting a query works
 # Check that the collapsing looks good on every screen size.
+# Check that uploading a table works
+# Check that deleting a table works
 
 test_that(
   "the checklist was completed",

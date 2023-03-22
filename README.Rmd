@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 
 <!-- change -->
 
-The *octopus* package is an SQL editor built entirely in R. You can preview tables, upload files, send queries, and more.
+The *octopus* package is a database management tool built entirely in R. You can preview tables, upload files, send queries, and more.
 
 All database credentials are handled by the R user. Simply pass a supported database connection object created with `DBI::dbConnect()` to the function `octopus::view_database()` and *octopus* will start a shiny application allowing you to interact with the database.
 
@@ -47,9 +47,13 @@ The *octopus* package currently supports the following databases:
 
 -   Vertica DB
 
-Don't see the database that you use? I would be glad to add it. Just reach out to me and we can work together to create compatibility for a new connection type.
-
 ## Installation
+
+Install the stable version from CRAN.
+
+``` r
+install.packages("octopus")
+```
 
 Install the development version from github.
 
@@ -63,13 +67,11 @@ Here is an example of connecting to a database and running the main function of 
 
 ```{r example, eval = FALSE}
 # Create a Database Connection
-con <-
-  DBI::dbConnect(
-    RPostgres::Postgres(),
-    host = "localhost",
-    user = "postgres",
-    password = keyring::key_get("DBPassword")
-  )
+drv <- duckdb::duckdb()
+con <- DBI::dbConnect(drv)
+
+# Write some data
+DBI::dbWriteTable(con, "mtcars", mtcars)
 
 # View the Database
 octopus::view_database(con)

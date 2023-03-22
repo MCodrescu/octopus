@@ -5,7 +5,7 @@ Version: 0.1.1
 Authors@R: person("Marcus", "Codrescu", , "m.codrescu@outlook.com", role = c("aut", "cre"))
 Maintainer: Marcus Codrescu <m.codrescu@outlook.com>
 Description: A database management tool built as a 'shiny' application. Connect to various 
-    database backends to send queries, upload files, preview tables, and more. 
+    databases to send queries, upload files, preview tables, and more. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
