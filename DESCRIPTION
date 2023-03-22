@@ -1,7 +1,7 @@
 Package: octopus
 Type: Package
 Title: A Database Management Tool
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: person("Marcus", "Codrescu", , "m.codrescu@outlook.com", role = c("aut", "cre"))
 Maintainer: Marcus Codrescu <m.codrescu@outlook.com>
 Description: A database management tool built as a 'shiny' application. Connect to various 
