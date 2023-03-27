@@ -272,7 +272,7 @@ view_database <-
 
           table_modal_w_download_UI(
             id = "preview",
-            title = "Preview Table",
+            title = glue::glue("Preview Table: {input$tables}"),
             download_title = "Download Preview",
             n_rows = n_rows,
             result = result
