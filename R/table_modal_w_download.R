@@ -38,7 +38,11 @@ table_modal_w_download_UI <- function(id, title, download_title, n_rows, result)
             server = TRUE,
             rownames = FALSE,
             {
-              result
+              if(nrow(result) > 1000){
+                result[1:1000, ]
+              } else {
+                result
+              }
             }
           )
         ),
