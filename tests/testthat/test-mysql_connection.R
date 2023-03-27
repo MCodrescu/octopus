@@ -182,6 +182,47 @@ if(docker_working){
     }
   )
 
+  test_that(
+    "a join query returns the correct number of rows",
+    {
+      table_1 <-
+        data.frame(
+          x = c(1, 2, 3),
+          y = c("A", "B", "C")
+        )
+
+      table_2 <-
+        data.frame(
+          z = c(4, 5, 6),
+          y = c("A", "B", "C")
+        )
+
+      write_table_mysql(
+        con,
+        schema = "example",
+        table_name = "table_1",
+        data = table_1
+      )
+
+      write_table_mysql(
+        con,
+        schema = "example",
+        table_name = "table_2",
+        data = table_2
+      )
+
+      expect_equal(
+        get_n_rows_mysql(
+          con = con,
+          schema = "",
+          table = "",
+          query = "SELECT * FROM table_1 INNER JOIN table_2 USING (y)"
+        ),
+        3
+      )
+    }
+  )
+
   #-------------------------------------------------------------------------------
 
   DBI::dbDisconnect(con)

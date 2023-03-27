@@ -182,6 +182,37 @@ if(docker_working){
     }
   )
 
+  test_that(
+    "a join query returns the correct number of rows",
+    {
+      table_1 <-
+        data.frame(
+          x = c(1, 2, 3),
+          y = c("A", "B", "C")
+        )
+
+      table_2 <-
+        data.frame(
+          z = c(4, 5, 6),
+          y = c("A", "B", "C")
+        )
+
+      DBI::dbWriteTable(con, "table_1", table_1)
+      DBI::dbWriteTable(con, "table_2", table_2)
+
+      expect_equal(
+        get_n_rows_postgres(
+          con = con,
+          schema = "",
+          table = "",
+          query = "SELECT * FROM table_1 INNER JOIN table_2 USING (y)"
+        ) |> as.numeric(),
+        3
+      )
+    }
+  )
+
+
   #-------------------------------------------------------------------------------
 
   DBI::dbDisconnect(con)
