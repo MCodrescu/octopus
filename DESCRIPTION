@@ -6,6 +6,8 @@ Authors@R: person("Marcus", "Codrescu", , "m.codrescu@outlook.com", role = c("au
 Maintainer: Marcus Codrescu <m.codrescu@outlook.com>
 Description: A database management tool built as a 'shiny' application. Connect to various 
     databases to send queries, upload files, preview tables, and more. 
+URL: https://github.com/MCodrescu/octopus
+BugReports: https://github.com/MCodrescu/octopus/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
