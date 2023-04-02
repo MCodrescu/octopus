@@ -12,6 +12,7 @@
 # Check that the collapsing looks good on every screen size.
 # Check that uploading a table works
 # Check that deleting a table works
+# Check that the hotkeys work correctly
 
 test_that(
   "the checklist was completed",

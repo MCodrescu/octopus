@@ -177,7 +177,18 @@ view_database <-
                   value = "",
                   showPrintMargin = FALSE,
                   fontSize = 16,
-                  highlightActiveLine = FALSE
+                  highlightActiveLine = FALSE,
+                  hotkeys = list(
+                    run_key = list(
+                      win = "Ctrl-Shift-Enter",
+                      mac = "CMD-SHIFT-ENTER"
+                    ),
+                    format_key = list(
+                      win = "Ctrl-Shift-F",
+                      mac = "CMD-SHIFT-F"
+                    )
+                  ),
+                  debounce = 1
                 ),
               )
             )
@@ -427,59 +438,62 @@ view_database <-
 
       # Query ----------------------------------------------------------------
 
-      # Allow submitting queries
-      shinyjs::onclick("submitQuery", {
+      query_submit <- function(){
+        tryCatch({
 
-          tryCatch({
+          n_rows <- get_n_rows(
+            con = con,
+            schema = input$schema,
+            table = input$tables,
+            query = input$query
+          )
 
-            n_rows <- get_n_rows(
-              con = con,
-              schema = input$schema,
-              table = input$tables,
-              query = input$query
-            )
+          result <- submit_query(
+            query = input$query,
+            con = con,
+            n_rows = n_rows
+          )
 
-            result <- submit_query(
-              query = input$query,
-              con = con,
-              n_rows = n_rows
-            )
+          table_modal_w_download_Server(
+            id = "query",
+            result = result
+          )
 
-            table_modal_w_download_Server(
-              id = "query",
-              result = result
-            )
+          table_modal_w_download_UI(
+            id = "query",
+            title = "Query Preview",
+            download_title = "Download",
+            n_rows = n_rows,
+            result = result
+          )
 
-            table_modal_w_download_UI(
-              id = "query",
-              title = "Query Preview",
-              download_title = "Download",
-              n_rows = n_rows,
-              result = result
-            )
+          # Update select input
+          current_tables <- get_tables(con, input$schema)
+          shiny::updateSelectizeInput(
+            session,
+            "tables",
+            choices = current_tables,
+            selected = current_tables[1],
+            server = TRUE
+          )
 
-            # Update select input
-            current_tables <- get_tables(con, input$schema)
-            shiny::updateSelectizeInput(
-              session,
-              "tables",
-              choices = current_tables,
-              selected = current_tables[1],
-              server = TRUE
-            )
+        }, error = function(error){
+          shiny::showNotification(
+            error$message
+          )
+        })
+      }
 
-          }, error = function(error){
-            shiny::showNotification(
-              error$message
-            )
-          })
+      # Hotkey Query Submit
+      observeEvent(input$query_run_key, query_submit())
 
-      })
+      # Run Button Query Submit
+      shinyjs::onclick("submitQuery", query_submit())
 
       # Format -----------------------------------------------------------------
 
       # Reformat SQL code
-      shinyjs::onclick("formatQuery", {
+      format_code <- function(){
         original_query <- input$query
         tryCatch(
           {
@@ -505,7 +519,13 @@ view_database <-
             shiny::showNotification(error$message)
           }
         )
-      })
+      }
+
+      # Hotkey to Format
+      observeEvent(input$query_format_key, format_code())
+
+      # Format Button
+      shinyjs::onclick("formatQuery", format_code())
 
     }
 
