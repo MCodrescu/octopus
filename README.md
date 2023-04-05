@@ -1,15 +1,15 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# octopus
+# octopus <img src="images/octopus_logo_2.png" align="right" height="138"/>
 
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/MCodrescu/octopus/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MCodrescu/octopus/actions/workflows/R-CMD-check.yaml)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/octopus)](https://CRAN.R-project.org/package=octopus)
-<!-- badges: end -->
 
+<!-- badges: end -->
 <!-- change -->
 
 The *octopus* package is a database management tool built entirely in R.
