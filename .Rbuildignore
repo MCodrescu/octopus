@@ -9,3 +9,6 @@
 ^cran-comments\.md$
 ^CRAN-SUBMISSION$
 ^New Feature Ideas$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

@@ -1,0 +1,117 @@
+---
+title: "Getting Started"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{octopus}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction
+
+Analytic databases are the industry standard for maintaining large data sets. As a data practitioner, it is essential to interact with these databases. The octopus package aims to be the default tool for interacting with and managing databases.
+
+## Multilingual Support
+
+One of the most important goals of the octopus package is multilingual support for various databases. The name octopus analogizes the many arms of an octopus to the many compatible connection types of the package.
+
+Under the hood, the octopus package starts a shiny application that receives input from the browser. It takes that input and translates it to the specific SQL dialect for the database you are working with.
+
+Take, for example, the following two ways of querying data from a table. In Postgres, you would specify the exact table name using quotations.
+
+``` sqlpostgresql
+SELECT * FROM "public"."mtcars"
+```
+
+However, in MySQL you would specify the exact table name using back ticks.
+
+``` sqlmysql
+SELECT * FROM `public`.`mtcars`
+```
+
+Subtle differences like this can be annoying to remember, but you can simply click the **View** button in the octopus interface and you will get a preview of the table regardless of the SQL dialect.
+
+Here is a list of the currently supported databases.
+
+```{r database-list, echo=TRUE, paged.print=TRUE}
+octopus::list_drivers()
+```
+
+## Comparison to DBI
+
+Let's demonstrate how to explore a database using the DBI package alone versus using the octopus package. Let's begin by connecting to a MySQL database that we want to explore.
+
+```{r start-database, include=FALSE}
+sha <- system("docker run -p 3306:3306 -d sakiladb/mysql:latest", intern = TRUE)
+
+Sys.sleep(20)
+```
+
+```{r connect-to-database}
+con <- DBI::dbConnect(
+  RMySQL::MySQL(),
+  host = "localhost",
+  user = "sakila",
+  password = "p_ssW0rd",
+  dbname = "sakila",
+  port = 3306
+)
+```
+
+We can list all the tables available in the database by using `DBI::dbListTables()`.
+
+```{r list-tables-r}
+DBI::dbListTables(con)
+```
+
+To see the details of a table we can use `DBI::dbReadTable()` to read the entire table into our R session.
+
+```{r preview-table, warning=FALSE}
+DBI::dbReadTable(con, "actor") |> head()
+```
+
+Using this approach works fine for a single table, but what if we want to view many tables, or even different schemas? We would need to copy and paste our code and change the table name each time.
+
+Rewriting our code repeatedly becomes tedious; especially if we don't know exactly where the data is in the database that we need.
+
+## Octopus Approach
+
+Let's try a different approach. Let's use octopus to interact with the database through the application interface.
+
+```{r run-octopus, eval = FALSE}
+# Start the octopus app
+octopus::view_database(con)
+```
+
+![](https://raw.githubusercontent.com/MCodrescu/octopus/main/images/oi1.png)
+
+![](https://raw.githubusercontent.com/MCodrescu/octopus/main/images/oi2.png){width="100%"}
+
+![](https://raw.githubusercontent.com/MCodrescu/octopus/main/images/oi3.png){width="100%"}
+
+Now we can easily scroll through the different tables in the database and preview them using the **View** button. We also know exactly how many rows a table has without having to bring the data into our R session.
+
+```{r shutdown, include = FALSE}
+DBI::dbDisconnect(con)
+
+system(
+  glue::glue(
+    "docker stop {sha}"
+  )
+)
+
+Sys.sleep(3)
+
+system(
+  glue::glue(
+    "docker rm {sha}"
+  )
+)
+```

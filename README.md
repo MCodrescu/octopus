@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# octopus <img src="images/octopus_logo_2.png" align="right" height="138"/>
+# <img src="https://raw.githubusercontent.com/MCodrescu/octopus/main/images/octopus_logo.png" height="138px"/> octopus
 
 <!-- badges: start -->
 
@@ -23,7 +23,7 @@ application allowing you to interact with the database.
 *Try it out here!
 [shinyapps.io](https://zszxyy-marcus-codrescu.shinyapps.io/octopusconceptapp/)*
 
-![octopus Interface](images/octopusMainPage3.png)
+![](https://raw.githubusercontent.com/MCodrescu/octopus/da65cdba6ce2362c7b8c21cd2cf309a3cfcbb17b/images/octopusMainPage3.png)
 
 ## Supported Databases
 

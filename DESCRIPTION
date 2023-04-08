@@ -6,7 +6,8 @@ Authors@R: person("Marcus", "Codrescu", , "m.codrescu@outlook.com", role = c("au
 Maintainer: Marcus Codrescu <m.codrescu@outlook.com>
 Description: A database management tool built as a 'shiny' application. Connect to various 
     databases to send queries, upload files, preview tables, and more. 
-URL: https://github.com/MCodrescu/octopus
+URL: https://github.com/MCodrescu/octopus,
+    https://mcodrescu.github.io/octopus/
 BugReports: https://github.com/MCodrescu/octopus/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -14,8 +15,10 @@ LazyData: true
 Suggests: 
     duckdb,
     keyring,
+    knitr,
     odbc,
     readr,
+    rmarkdown,
     RMySQL,
     RPostgres,
     RSQLite,
@@ -35,3 +38,4 @@ Imports:
     shinyjs,
     utils
 RoxygenNote: 7.2.1
+VignetteBuilder: knitr
