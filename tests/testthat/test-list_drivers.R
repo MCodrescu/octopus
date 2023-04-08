@@ -8,7 +8,8 @@ test_that(
         "Vertica Database",
         "duckdb_connection",
         "MySQLConnection",
-        "SQLiteConnection"
+        "SQLiteConnection",
+        "Microsoft SQL Server"
       ),
       list_drivers()
     )

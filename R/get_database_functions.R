@@ -80,6 +80,18 @@ get_database_functions <-
         )
       )
 
+    } else if (driver == "Microsoft SQL Server"){
+      return (
+        list(
+          get_schemas_mssql,
+          get_tables_mssql,
+          get_n_rows_mssql,
+          get_preview_mssql,
+          delete_table_mssql,
+          write_table_mssql
+        )
+      )
+
     } else if (driver == "FaultyConnectionExample"){
       return (
         list(
