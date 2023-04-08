@@ -10,7 +10,8 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval = FALSE
 )
 ```
 
@@ -71,10 +72,35 @@ We can list all the tables available in the database by using `DBI::dbListTables
 DBI::dbListTables(con)
 ```
 
+``` r
+#  [1] "actor"                      "actor_info"                
+#  [3] "address"                    "category"                  
+#  [5] "city"                       "country"                   
+#  [7] "customer"                   "customer_list"             
+#  [9] "film"                       "film_actor"                
+# [11] "film_category"              "film_list"                 
+# [13] "film_text"                  "inventory"                 
+# [15] "language"                   "nicer_but_slower_film_list"
+# [17] "payment"                    "rental"                    
+# [19] "sales_by_film_category"     "sales_by_store"            
+# [21] "staff"                      "staff_list"                
+# [23] "store"
+```
+
 To see the details of a table we can use `DBI::dbReadTable()` to read the entire table into our R session.
 
 ```{r preview-table, warning=FALSE}
 DBI::dbReadTable(con, "actor") |> head()
+```
+
+``` r
+#   actor_id first_name    last_name         last_update
+# 1        1   PENELOPE      GUINESS 2006-02-15 04:34:33
+# 2        2       NICK     WAHLBERG 2006-02-15 04:34:33
+# 3        3         ED        CHASE 2006-02-15 04:34:33
+# 4        4   JENNIFER        DAVIS 2006-02-15 04:34:33
+# 5        5     JOHNNY LOLLOBRIGIDA 2006-02-15 04:34:33
+# 6        6      BETTE    NICHOLSON 2006-02-15 04:34:33
 ```
 
 Using this approach works fine for a single table, but what if we want to view many tables, or even different schemas? We would need to copy and paste our code and change the table name each time.
@@ -90,7 +116,7 @@ Let's try a different approach. Let's use octopus to interact with the database 
 octopus::view_database(con)
 ```
 
-![](https://raw.githubusercontent.com/MCodrescu/octopus/main/images/oi1.png)
+![](https://raw.githubusercontent.com/MCodrescu/octopus/main/images/oi1.png){width="100%"}
 
 ![](https://raw.githubusercontent.com/MCodrescu/octopus/main/images/oi2.png){width="100%"}
 
