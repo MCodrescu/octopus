@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# <img src="https://raw.githubusercontent.com/MCodrescu/octopus/main/images/octopus_logo.png" height="138px"/> octopus
+# octopus <img src="https://raw.githubusercontent.com/MCodrescu/octopus/main/images/octopus_logo.png" align="right" height="138px"/>
 
 <!-- badges: start -->
 
