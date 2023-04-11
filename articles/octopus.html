@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">octopus</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,6 +40,9 @@
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
@@ -105,7 +108,10 @@ and you will get a preview of the table regardless of the SQL
 dialect.</p>
 <p>Here is a list of the currently supported databases.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">octopus</span><span class="fu">::</span><span class="fu"><a href="../reference/list_drivers.html">list_drivers</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">octopus</span><span class="fu">::</span><span class="fu"><a href="../reference/list_drivers.html">list_drivers</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "PqConnection"         "Snowflake"            "Vertica Database"    </span></span>
+<span><span class="co">#&gt; [4] "duckdb_connection"    "MySQLConnection"      "SQLiteConnection"    </span></span>
+<span><span class="co">#&gt; [7] "Microsoft SQL Server"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="comparison-to-dbi">Comparison to DBI<a class="anchor" aria-label="anchor" href="#comparison-to-dbi"></a>
