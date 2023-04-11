@@ -1,21 +1,19 @@
 ## A Snowflake database is required for these tests.
 ## You can get a free trial at https://signup.snowflake.com/
 
-snowflake_key_set <-
+snowflake_is_working <-
   tryCatch({
-    keyring::key_get("SnowflakeTrialPassword") != ""
+    con <-
+      DBI::dbConnect(
+        odbc::odbc(),
+        dsn = "Snowflake_Trial",
+        pwd = keyring::key_get("SnowflakeTrialPassword")
+      )
   }, error = function(error){
     FALSE
   })
 
-if (snowflake_key_set ){
-
-  con <-
-    DBI::dbConnect(
-      odbc::odbc(),
-      dsn = "Snowflake_Trial",
-      pwd = keyring::key_get("SnowflakeTrialPassword")
-    )
+if (snowflake_is_working){
 
   test_that(
     "get_schemas retrieves schemas correctly",

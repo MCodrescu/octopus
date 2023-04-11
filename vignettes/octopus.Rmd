@@ -41,7 +41,7 @@ Subtle differences like this can be annoying to remember, but you can simply cli
 
 Here is a list of the currently supported databases.
 
-```{r database-list, echo=TRUE, paged.print=TRUE}
+```{r database-list, echo=TRUE, paged.print=TRUE, eval = TRUE}
 octopus::list_drivers()
 ```
 
