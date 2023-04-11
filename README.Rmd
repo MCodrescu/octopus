@@ -35,17 +35,10 @@ All database credentials are handled by the R user. Simply pass a supported data
 
 The *octopus* package currently supports the following databases:
 
--   Postgres
+```{r}
+octopus::list_drivers()
+```
 
--   MySQL
-
--   SQLite
-
--   DuckDB
-
--   Snowflake
-
--   Vertica DB
 
 ## Installation
 

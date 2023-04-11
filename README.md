@@ -29,17 +29,12 @@ application allowing you to interact with the database.
 
 The *octopus* package currently supports the following databases:
 
-- Postgres
-
-- MySQL
-
-- SQLite
-
-- DuckDB
-
-- Snowflake
-
-- Vertica DB
+``` r
+octopus::list_drivers()
+#> [1] "PqConnection"         "Snowflake"            "Vertica Database"    
+#> [4] "duckdb_connection"    "MySQLConnection"      "SQLiteConnection"    
+#> [7] "Microsoft SQL Server"
+```
 
 ## Installation
 
