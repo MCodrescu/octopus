@@ -81,30 +81,27 @@
 <h2 id="supported-databases">Supported Databases<a class="anchor" aria-label="anchor" href="#supported-databases"></a>
 </h2>
 <p>The <em>octopus</em> package currently supports the following databases:</p>
-<ul>
-<li><p>Postgres</p></li>
-<li><p>MySQL</p></li>
-<li><p>SQLite</p></li>
-<li><p>DuckDB</p></li>
-<li><p>Snowflake</p></li>
-<li><p>Vertica DB</p></li>
-</ul>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">octopus</span><span class="fu">::</span><span class="fu"><a href="reference/list_drivers.html">list_drivers</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "PqConnection"         "Snowflake"            "Vertica Database"    </span></span>
+<span><span class="co">#&gt; [4] "duckdb_connection"    "MySQLConnection"      "SQLiteConnection"    </span></span>
+<span><span class="co">#&gt; [7] "Microsoft SQL Server"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>Install the stable version from CRAN.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"octopus"</span><span class="op">)</span></span></code></pre></div>
 <p>Install the development version from github.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"MCodrescu/octopus"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
 <p>Here is an example of connecting to a database and running the main function of octopus.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a Database Connection</span></span>
 <span><span class="va">drv</span> <span class="op">&lt;-</span> <span class="fu">duckdb</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/duckdb/man/duckdb.html" class="external-link">duckdb</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbConnect.html" class="external-link">dbConnect</a></span><span class="op">(</span><span class="va">drv</span><span class="op">)</span></span>
