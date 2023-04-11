@@ -9,6 +9,7 @@ snowflake_is_working <-
         dsn = "Snowflake_Trial",
         pwd = keyring::key_get("SnowflakeTrialPassword")
       )
+    TRUE
   }, error = function(error){
     FALSE
   })
