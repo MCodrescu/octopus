@@ -242,6 +242,12 @@ view_database <-
 
         # Update table select on schema change
         shinyjs::onevent("change", "schema", {
+          shiny::showNotification(
+            "Loading...",
+            duration = NULL,
+            id = "loading-notification"
+          )
+
           current_tables <- get_tables(con, input$schema)
           shiny::updateSelectizeInput(
             session,
@@ -249,6 +255,10 @@ view_database <-
             choices = current_tables,
             selected = current_tables[1],
             server = TRUE
+          )
+
+          shiny::removeNotification(
+            "loading-notification"
           )
         })
       }, error = function(error){
@@ -260,6 +270,12 @@ view_database <-
 
       # View tables on click view button
       shinyjs::onclick("viewTable", {
+
+        shiny::showNotification(
+          "Loading Table...",
+          duration = NULL,
+          id = "loading-notification"
+        )
 
         tryCatch({
 
@@ -293,6 +309,10 @@ view_database <-
           shiny::showNotification(error$message)
         })
 
+        shiny::removeNotification(
+          "loading-notification"
+        )
+
       })
 
       # Delete Table -----------------------------------------------------------
@@ -320,10 +340,21 @@ view_database <-
           shiny::removeModal()
 
           tryCatch({
+
+            shiny::showNotification(
+              "Loading...",
+              duration = NULL,
+              id = "loading-notification"
+            )
+
             result <- delete_table(
               con,
               input$schema,
               input$tables
+            )
+
+            shiny::removeNotification(
+              "loading-notification"
             )
 
             # Notify success
@@ -355,11 +386,21 @@ view_database <-
       # Upload file to DB
       shiny::observeEvent(input$newTableUpload, {
 
+        shiny::showNotification(
+          "Reading File...",
+          duration = NULL,
+          id = "loading-notification"
+        )
+
         # Read file
         file <- input$newTableUpload
         shiny::req(file)
         new_table <- rio::import(
           file$datapath
+        )
+
+        shiny::removeNotification(
+          "loading-notification"
         )
 
         shiny::showModal(
@@ -403,6 +444,12 @@ view_database <-
           }
 
           tryCatch({
+            shiny::showNotification(
+              "Uploading...",
+              duration = NULL,
+              id = "loading-notification"
+            )
+
             # Write data frame to DB
             result <- write_table(
               con,
@@ -414,6 +461,10 @@ view_database <-
                 TRUE,
                 FALSE
               )
+            )
+
+            shiny::removeNotification(
+              "loading-notification"
             )
 
             # Show result
@@ -485,10 +536,30 @@ view_database <-
       }
 
       # Hotkey Query Submit
-      observeEvent(input$query_run_key, query_submit())
+      observeEvent(input$query_run_key, {
+        shiny::showNotification(
+          "Loading...",
+          duration = NULL,
+          id = "loading-notification"
+        )
+        query_submit()
+        shiny::removeNotification(
+          "loading-notification"
+        )
+      })
 
       # Run Button Query Submit
-      shinyjs::onclick("submitQuery", query_submit())
+      shinyjs::onclick("submitQuery", {
+        shiny::showNotification(
+          "Loading...",
+          duration = NULL,
+          id = "loading-notification"
+        )
+        query_submit()
+        shiny::removeNotification(
+          "loading-notification"
+        )
+      })
 
       # Format -----------------------------------------------------------------
 
