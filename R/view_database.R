@@ -518,12 +518,17 @@ view_database <-
           )
 
           # Update select input
+          previous_table <- input$tables
           current_tables <- get_tables(con, input$schema)
           shiny::updateSelectizeInput(
             session,
             "tables",
             choices = current_tables,
-            selected = current_tables[1],
+            selected =  ifelse(
+              previous_table %in% current_tables,
+              previous_table,
+              current_tables[1]
+            ),
             server = TRUE
           )
 
