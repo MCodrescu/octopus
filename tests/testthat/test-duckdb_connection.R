@@ -198,6 +198,23 @@ if (duckdb_installed){
     }
   )
 
+  test_that(
+    "a cte query returns the correct number of rows",
+    {
+      n_rows <- get_n_rows_duckdb(
+        con = con,
+        schema = "",
+        table = "",
+        query = "WITH cte1 AS (SELECT * FROM example.mtcars) SELECT * FROM cte1"
+      )
+
+      expect_equal(
+        n_rows,
+        nrow(mtcars)
+      )
+    }
+  )
+
 
 
   #-------------------------------------------------------------------------------

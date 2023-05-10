@@ -75,7 +75,7 @@ get_tables_snowflake <- function(con, schema) {
 get_n_rows_snowflake <- function(con, schema, table, query = "") {
 
   if (query != ""){
-    if (!grepl("^SELECT", trimws(query), ignore.case = TRUE)){
+    if (!grepl("^SELECT|^WITH", trimws(query), ignore.case = TRUE)){
       return(0)
     }
     query_string <-

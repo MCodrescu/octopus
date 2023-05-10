@@ -1,5 +1,7 @@
 ## A Snowflake database is required for these tests.
 ## You can get a free trial at https://signup.snowflake.com/
+## The server is given by the account identifier ex: WYKESWE-XF50993.snowflakecomputing.com
+## Make sure to create a database EXAMPLE
 
 snowflake_is_working <-
   tryCatch({
@@ -252,6 +254,30 @@ if (snowflake_is_working){
           query = "SELECT * FROM TABLE_1 INNER JOIN TABLE_2 USING(\"y\")"
         ) |> as.numeric(),
         3
+      )
+    }
+  )
+
+  test_that(
+    "a cte query returns the correct number of rows",
+    {
+      DBI::dbWriteTable(
+        con,
+        "MTCARS",
+        mtcars,
+        overwrite = TRUE
+      )
+
+      n_rows <- get_n_rows_snowflake(
+        con = con,
+        schema = "",
+        table = "",
+        query = "WITH cte1 AS (SELECT * FROM MTCARS) SELECT * FROM cte1"
+      )
+
+      expect_equal(
+        n_rows,
+        nrow(mtcars)
       )
     }
   )
