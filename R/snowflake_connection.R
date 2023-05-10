@@ -95,7 +95,7 @@ get_n_rows_snowflake <- function(con, schema, table, query = "") {
         SELECT
           COUNT(*)
         FROM (
-          SELECT *
+          SELECT $1
           FROM \"{schema}\".\"{table}\"
         ) AS subquery;
         "
