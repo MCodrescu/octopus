@@ -8,27 +8,21 @@ docker_working <-
         "docker run -d -p 5433:5433 -e APP_DB_USER=newdbadmin -e APP_DB_PASSWORD=vertica vertica/vertica-ce",
         intern = TRUE
       )
+
+    Sys.sleep(180)
+
+    con <- DBI::dbConnect(
+      odbc::odbc(),
+      dsn = "Vertica_Test",
+      pwd = "vertica"
+    )
     TRUE
   }, error = \(x){
     FALSE
   })
 
-odbc_dsn_setup <-
-  tryCatch({
-    "Vertica_Test" %in% odbc::odbcListDataSources()$name
-  }, error = function(error){
-    FALSE
-  })
 
-if(docker_working & odbc_dsn_setup){
-
-  Sys.sleep(120)
-
-  con <- DBI::dbConnect(
-    odbc::odbc(),
-    dsn = "Vertica_Test",
-    pwd = "vertica"
-  )
+if(docker_working){
 
   #-------------------------------------------------------------------------------
 
