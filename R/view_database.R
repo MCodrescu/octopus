@@ -49,7 +49,7 @@
 #' @export
 #'
 view_database <-
-  function(con, options = list()){
+  function(con, options = list(), max_file_upload_size = 2000 * 1024^2){
     ui <- shiny::bootstrapPage(
       theme = bslib::bs_theme(
         version = 5
@@ -380,7 +380,7 @@ view_database <-
       # Upload Table -----------------------------------------------------------
 
       # Increase file upload limit
-      options(shiny.maxRequestSize = 2000 * 1024^2)
+      options(shiny.maxRequestSize = max_file_upload_size)
 
       # Upload file to DB
       shiny::observeEvent(input$newTableUpload, {
