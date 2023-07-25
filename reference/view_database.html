@@ -57,7 +57,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">view_database</span><span class="op">(</span><span class="va">con</span>, options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">view_database</span><span class="op">(</span><span class="va">con</span>, options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, max_file_upload_size <span class="op">=</span> <span class="fl">2000</span> <span class="op">*</span> <span class="fl">1024</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -68,6 +68,10 @@
 
 <dt>options</dt>
 <dd><p>A named list of options to be passed along to shinyApp().</p></dd>
+
+
+<dt>max_file_upload_size</dt>
+<dd><p>An integer. The max number of bits allowed in file uploads.</p></dd>
 
 </dl></div>
     <div class="section level2">
