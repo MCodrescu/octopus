@@ -4,6 +4,7 @@
 #'
 #' @param con A database connection object. The result of DBI::dbConnect().
 #' @param options A named list of options to be passed along to shinyApp().
+#' @param max_file_upload_size An integer. The max number of bits allowed in file uploads.
 #'
 #' @importFrom shiny shinyApp
 #' @importFrom shiny showNotification

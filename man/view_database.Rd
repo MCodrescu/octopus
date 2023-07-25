@@ -4,12 +4,14 @@
 \alias{view_database}
 \title{View Database Connection with Octopus}
 \usage{
-view_database(con, options = list())
+view_database(con, options = list(), max_file_upload_size = 2000 * 1024^2)
 }
 \arguments{
 \item{con}{A database connection object. The result of DBI::dbConnect().}
 
 \item{options}{A named list of options to be passed along to shinyApp().}
+
+\item{max_file_upload_size}{An integer. The max number of bits allowed in file uploads.}
 }
 \value{
 An R Shiny instance.
