@@ -20,7 +20,11 @@ submit_query <-
       )
     } else if(n_rows > 50000){
       stop(
-        "Your query returned a result too large."
+        paste(
+          "Your query returned a result too large.",
+          format(n_rows, big.mark = ","),
+          "rows returned."
+        )
       )
     } else {
 
