@@ -34,7 +34,7 @@ table_modal_w_download_UI <- function(id, title, download_title, n_rows, result)
           class = "table-responsive",
           style = "max-height: 70vh;",
           DT::renderDataTable(
-            options = list(dom = "t", paging = FALSE),
+            options = list(dom = "t", paging = FALSE, ordering = FALSE),
             server = TRUE,
             rownames = FALSE,
             {
