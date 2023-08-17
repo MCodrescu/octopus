@@ -28,7 +28,7 @@ table_modal_w_download_UI <- function(id, title, download_title, n_rows, result)
         size = "xl",
         shiny::h3(glue("{title}")),
         shiny::p(
-          glue::glue("{n_rows} rows")
+          glue::glue("{format(n_rows, big.mark = \",\")} rows")
         ),
         shiny::div(
           class = "table-responsive",
