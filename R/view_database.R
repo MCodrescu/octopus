@@ -178,6 +178,8 @@ view_database <-
                   showPrintMargin = FALSE,
                   fontSize = 16,
                   highlightActiveLine = FALSE,
+                  autoComplete = "enabled",
+                  autoCompleters = c("static"),
                   hotkeys = list(
                     run_key = list(
                       win = "Ctrl-Shift-Enter",
@@ -240,6 +242,18 @@ view_database <-
           server = TRUE
         )
 
+        # Set Ace Editors Auto Complete Suggestions
+        current_schema <- schemas[1]
+        auto_complete_suggestions <- list()
+        auto_complete_suggestions[["Schema"]] <- schemas
+        auto_complete_suggestions[[current_schema]] <- current_tables
+
+        shinyAce::updateAceEditor(
+          session = session,
+          editorId = "query",
+          autoCompleteList = auto_complete_suggestions
+        )
+
         # Update table select on schema change
         shinyjs::onevent("change", "schema", {
           shiny::showNotification(
@@ -255,6 +269,18 @@ view_database <-
             choices = current_tables,
             selected = current_tables[1],
             server = TRUE
+          )
+
+          # Set Ace Editors Auto Complete Suggestions
+          current_schema <- input$schema
+          auto_complete_suggestions <- list()
+          auto_complete_suggestions[["Schema"]] <- schemas
+          auto_complete_suggestions[[current_schema]] <- current_tables
+
+          shinyAce::updateAceEditor(
+            session = session,
+            editorId = "query",
+            autoCompleteList = auto_complete_suggestions
           )
 
           shiny::removeNotification(
