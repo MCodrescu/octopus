@@ -470,6 +470,10 @@ view_database <-
           if (input$cleanColumnNames == "Yes") {
             new_table <-
               janitor::clean_names(new_table)
+            if (driver == "Snowflake"){
+              colnames(new_table) <- toupper(colnames(new_table))
+            }
+
           }
 
           tryCatch({
