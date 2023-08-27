@@ -105,7 +105,6 @@ table_modal_w_download_Server <- function(id, result) {
 #' @importFrom DBI dbFetch
 #' @importFrom DBI dbHasCompleted
 #' @importFrom DBI Id
-#' @importFrom dplyr bind_rows
 #' @importFrom glue glue
 #' @importFrom data.table fwrite
 #' @importFrom data.table rbindlist
