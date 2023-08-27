@@ -509,7 +509,7 @@ view_database <-
               session,
               "tables",
               choices = current_tables,
-              selected = current_tables[1],
+              selected = input$newTableName,
               server = TRUE
             )
 
