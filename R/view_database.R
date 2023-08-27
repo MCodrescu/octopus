@@ -318,15 +318,18 @@ view_database <-
             input$tables
           )
 
-          table_modal_w_download_Server(
+          table_modal_w_download_full_Server(
             id = "preview",
-            result = result
+            con = con,
+            schema = input$schema,
+            table = input$tables,
+            n_rows = n_rows
           )
 
           table_modal_w_download_UI(
             id = "preview",
             title = glue::glue("Preview Table: {input$tables}"),
-            download_title = "Download Preview",
+            download_title = "Download Table",
             n_rows = n_rows,
             result = result
           )

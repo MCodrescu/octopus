@@ -20,3 +20,16 @@ test_that(
     expect_true(TRUE)
   }
 )
+
+# Interactively Test the App
+if (interactive()){
+
+  con <- DBI::dbConnect(
+    odbc::odbc(),
+    dsn = "Snowflake_BBR",
+    pwd = keyring::key_get("Upstart")
+  )
+
+  octopus::view_database(con)
+
+}
