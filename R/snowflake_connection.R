@@ -29,7 +29,7 @@ get_schemas_snowflake <- function(con) {
 #' @noRd
 #'
 #' @param con A database connection object.
-#' @param schema A
+#' @param schema A string containing the schema name.
 #'
 #' @importFrom DBI dbGetQuery
 #' @importFrom glue glue
