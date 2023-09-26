@@ -242,17 +242,6 @@ view_database <-
           server = TRUE
         )
 
-        # Set Ace Editors Auto Complete Suggestions
-        current_schema <- schemas[1]
-        auto_complete_suggestions <- list()
-        auto_complete_suggestions[["Schema"]] <- schemas
-        auto_complete_suggestions[[current_schema]] <- current_tables
-
-        shinyAce::updateAceEditor(
-          session = session,
-          editorId = "query",
-          autoCompleteList = auto_complete_suggestions
-        )
 
         # Update table select on schema change
         shinyjs::onevent("change", "schema", {
@@ -271,22 +260,39 @@ view_database <-
             server = TRUE
           )
 
-          # Set Ace Editors Auto Complete Suggestions
-          current_schema <- input$schema
-          auto_complete_suggestions <- list()
-          auto_complete_suggestions[["Schema"]] <- schemas
-          auto_complete_suggestions[[current_schema]] <- current_tables
-
-          shinyAce::updateAceEditor(
-            session = session,
-            editorId = "query",
-            autoCompleteList = auto_complete_suggestions
-          )
-
           shiny::removeNotification(
             "loading-notification"
           )
         })
+
+        # Update column name suggestions
+        shinyjs::onevent("change", "tables",{
+
+          if (input$tables %in% current_tables){
+
+            # Set Ace Editors Auto Complete Suggestions
+            current_schema <- input$schema
+            current_table <- input$tables
+            current_table_preview <- get_preview(
+              con,
+              current_schema,
+              current_table
+            )
+            auto_complete_suggestions <- list()
+            auto_complete_suggestions[["Schema"]] <- schemas
+            auto_complete_suggestions[[current_schema]] <- current_tables
+            auto_complete_suggestions[[current_table]] <- colnames(current_table_preview)
+
+
+            shinyAce::updateAceEditor(
+              session = session,
+              editorId = "query",
+              autoCompleteList = auto_complete_suggestions
+            )
+          }
+
+        })
+
       }, error = function(error){
         shiny::showNotification(error$message)
       })
