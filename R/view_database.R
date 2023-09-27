@@ -273,15 +273,19 @@ view_database <-
             # Set Ace Editors Auto Complete Suggestions
             current_schema <- input$schema
             current_table <- input$tables
-            current_table_preview <- get_preview(
-              con,
-              current_schema,
-              current_table
-            )
+            current_table_preview <- tryCatch({
+               get_preview(
+                con,
+                current_schema,
+                current_table
+              )
+            }, error = function(error){
+              data.frame()
+            })
             auto_complete_suggestions <- list()
-            auto_complete_suggestions[["Schema"]] <- schemas
-            auto_complete_suggestions[[current_schema]] <- current_tables
-            auto_complete_suggestions[[current_table]] <- colnames(current_table_preview)
+            auto_complete_suggestions[["Schema"]] <- current_schema
+            auto_complete_suggestions[["Table"]] <- current_table
+            auto_complete_suggestions[["Column"]] <- colnames(current_table_preview)
 
 
             shinyAce::updateAceEditor(
