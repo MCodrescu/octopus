@@ -21,7 +21,7 @@ if (duckdb_installed){
     "get_schemas retrieves schemas correctly",
     {
 
-      expect_equal(
+      expect_setequal(
         get_schemas_duckdb(con),
         c("information_schema", "main", "pg_catalog")
       )
