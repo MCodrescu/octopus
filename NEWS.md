@@ -1,3 +1,5 @@
+# octopus 0.4.0
+
 # octopus 0.3.0
 * Added helpful loading notifications
 * Added faster row counts for Snowflake
