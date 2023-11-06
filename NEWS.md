@@ -1,3 +1,5 @@
+# octopus 0.4.1
+
 # octopus 0.4.0
 * Increased file upload size allowed limit
 * Return number of rows of every query
