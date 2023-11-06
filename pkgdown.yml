@@ -3,7 +3,7 @@ pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   octopus: octopus.html
-last_built: 2023-10-28T17:34Z
+last_built: 2023-11-06T22:22Z
 urls:
   reference: https://mcodrescu.github.io/octopus/reference
   article: https://mcodrescu.github.io/octopus/articles
