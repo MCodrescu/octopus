@@ -117,7 +117,7 @@ table_modal_w_download_Server <- function(id, result) {
 #' @param step_size The number of rows to retrieve at each step.
 #'
 #' @return A model server.
-table_modal_w_download_full_Server <- function(id, con, schema, table, n_rows, step_size = floor(n_rows / 100)) {
+table_modal_w_download_full_Server <- function(id, con, schema, table, n_rows, step_size = ceiling(n_rows / 100)) {
   shiny::moduleServer(
     id,
     function(input, output, session) {

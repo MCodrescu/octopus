@@ -30,6 +30,9 @@ if (interactive()){
     pwd = keyring::key_get("Upstart")
   )
 
+  con <- DBI::dbConnect(duckdb::duckdb())
+  DBI::dbWriteTable(con, "mtcars", mtcars)
+
   octopus::view_database(con)
 
 }
