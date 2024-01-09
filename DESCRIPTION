@@ -13,7 +13,6 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Suggests: 
-    duckdb,
     keyring,
     knitr,
     odbc,

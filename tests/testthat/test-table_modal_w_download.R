@@ -1,6 +1,6 @@
 # Interactively Test the Modal
 if (interactive()){
-  drv <- duckdb::duckdb()
+  drv <- RSQLite::SQLite()
   con <- DBI::dbConnect(drv)
 
   n <- 100000
